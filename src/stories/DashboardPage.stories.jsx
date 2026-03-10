@@ -54,7 +54,7 @@ export default {
   title: "Pages/DashboardPage",
   component: DashboardPage,
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
   },
   decorators: [
     (Story) => {
@@ -81,7 +81,7 @@ export const Default = {
         onClickCapture={(e) => {
           if (
             e.target.tagName === "BUTTON" ||
-            e.target.closest("expedition-detail__list-item")
+            e.target.closest(".expedition-list__item")
           ) {
             e.preventDefault();
             e.stopPropagation();

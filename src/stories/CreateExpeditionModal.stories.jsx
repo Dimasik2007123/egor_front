@@ -5,7 +5,7 @@ export default {
   title: "Modals/CreateExpeditionModal",
   component: CreateExpeditionModal,
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
   },
   decorators: [
     (Story) => (

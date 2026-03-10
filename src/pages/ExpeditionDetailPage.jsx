@@ -115,10 +115,7 @@ function ExpeditionDetailPage() {
       );
     } else if (expedition.role === "LEADER") {
       return (
-        <div
-          className="expedition-detail__leader-block"
-          style={{ maxWidth: "300px" }}
-        >
+        <div className="expedition-detail__leader-block">
           <button
             className="expedition-detail__button--metrics"
             onClick={handleViewMyMetrics}

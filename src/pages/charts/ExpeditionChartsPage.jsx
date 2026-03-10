@@ -46,7 +46,7 @@ function ExpeditionChartsPage() {
                 className={`charts__nav-link ${activeChart === "charts__nav-link--heart-rate" ? "charts__nav-link--active" : ""}`}
                 onClick={() => setActiveChart("heart-rate")}
               >
-                ❤️ ЧСС
+                <span className="heart-icon">❤️</span> ЧСС
               </button>
             </li>
             <li className="charts__nav-item">

@@ -24,11 +24,11 @@ const mockChartData = {
   },
   charts: {
     fatigue_chart:
-      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">График усталости и концентрации</div>',
+      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center">График усталости и концентрации</div>',
     heart_rate_chart:
-      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">График ЧСС</div>',
+      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center">График ЧСС</div>',
     composite_chart:
-      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center;">Комбинированный график</div>',
+      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center">Комбинированный график</div>',
   },
   period: "Март 2026",
   total_measurements: 150,

@@ -175,7 +175,7 @@ function ParticipantMetricsPage() {
           <div className="participant-metrics__stats-column">
             <div className="participant-metrics__stats-card">
               <h5 className="participant-metrics__stats-title">
-                ❤️ Средний пульс
+                <span className="heart-icon">❤️</span> Средний пульс
               </h5>
               <h3
                 className={`participant-metrics__stats-value ${
@@ -255,7 +255,8 @@ function ParticipantMetricsPage() {
             <div className="participant-metrics__charts-card">
               <div className="participant-metrics__charts-card-header">
                 <h5 className="participant-metrics__charts-card-title">
-                  ❤️ Частота сердечных сокращений
+                  <span className="heart-icon">❤️</span> Частота сердечных
+                  сокращений
                 </h5>
               </div>
               <div className="participant-metrics__charts-body">

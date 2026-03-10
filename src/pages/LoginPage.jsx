@@ -36,7 +36,7 @@ function LoginPage() {
       <div className="login__row">
         <div className="login__column">
           <div className="login__card">
-            <div className="login__card-header login__card-header--primary">
+            <div className="login__card-header">
               <h3>Вход в Arctic Metrics</h3>
             </div>
             <div className="login__card-body">

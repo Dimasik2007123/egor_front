@@ -101,10 +101,7 @@ function CreateExpeditionModal({ show, onClose, onSubmit }) {
   if (!show) return null;
 
   return (
-    <div
-      className="create-modal"
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-    >
+    <div className="create-modal">
       <div className="create-modal__dialog">
         <div className="create-modal__content">
           <div className="create-modal__header--primary">

@@ -25,6 +25,83 @@ const mockParticipants = [
     },
     joinedAt: "2026-03-02T12:00:00",
   },
+  {
+    participantId: 102,
+    user: {
+      id: 2,
+      firstName: "Мария",
+      lastName: "Сидорова",
+      email: "maria@arctic.ru",
+      individualNumber: "ARCTIC-002",
+    },
+    joinedAt: "2026-03-02T12:00:00",
+  },
+  {
+    participantId: 102,
+    user: {
+      id: 2,
+      firstName: "Мария",
+      lastName: "Сидорова",
+      email: "maria@arctic.ru",
+      individualNumber: "ARCTIC-002",
+    },
+    joinedAt: "2026-03-02T12:00:00",
+  },
+  {
+    participantId: 102,
+    user: {
+      id: 2,
+      firstName: "Мария",
+      lastName: "Сидорова",
+      email: "maria@arctic.ru",
+      individualNumber: "ARCTIC-002",
+    },
+    joinedAt: "2026-03-02T12:00:00",
+  },
+  {
+    participantId: 102,
+    user: {
+      id: 2,
+      firstName: "Мария",
+      lastName: "Сидорова",
+      email: "maria@arctic.ru",
+      individualNumber: "ARCTIC-002",
+    },
+    joinedAt: "2026-03-02T12:00:00",
+  },
+  {
+    participantId: 102,
+    user: {
+      id: 2,
+      firstName: "Мария",
+      lastName: "Сидорова",
+      email: "maria@arctic.ru",
+      individualNumber: "ARCTIC-002",
+    },
+    joinedAt: "2026-03-02T12:00:00",
+  },
+  {
+    participantId: 102,
+    user: {
+      id: 2,
+      firstName: "Мария",
+      lastName: "Сидорова",
+      email: "maria@arctic.ru",
+      individualNumber: "ARCTIC-002",
+    },
+    joinedAt: "2026-03-02T12:00:00",
+  },
+  {
+    participantId: 102,
+    user: {
+      id: 2,
+      firstName: "Мария",
+      lastName: "Сидорова",
+      email: "maria@arctic.ru",
+      individualNumber: "ARCTIC-002",
+    },
+    joinedAt: "2026-03-02T12:00:00",
+  },
 ];
 
 export default {

@@ -42,7 +42,7 @@ function RegisterPage() {
       <div className="register__row">
         <div className="register__column">
           <div className="refister__card">
-            <div className="register__card-header register__card-header--success">
+            <div className="register__card-header">
               <h3>Регистрация</h3>
             </div>
             <div className="register__card-body">

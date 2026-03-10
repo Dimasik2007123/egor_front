@@ -151,7 +151,7 @@ function EditExpeditionModal({
 
             <div className="edit-modal__footer">
               <div className="edit-modal__footer-actions">
-                <div>
+                <div className="edit-modal__footer-actions-group">
                   {!deleteConfirm ? (
                     <button
                       type="button"
@@ -175,7 +175,7 @@ function EditExpeditionModal({
                   )}
                 </div>
 
-                <div>
+                <div className="edit-modal__footer-actions-group">
                   <button
                     type="button"
                     className="edit-modal__footer-button--secondary"

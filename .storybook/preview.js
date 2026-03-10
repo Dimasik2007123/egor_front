@@ -1,5 +1,6 @@
 /** @type { import('@storybook/react-vite').Preview } */
 import "../src/assets/animations.css";
+import "../src/assets/fonts.css";
 import "../src/assets/styles_new.css";
 //import "bootstrap/dist/css/bootstrap.min.css";
 
