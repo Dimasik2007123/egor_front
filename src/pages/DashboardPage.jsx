@@ -216,29 +216,29 @@ function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status">
+      <div className="dashboard__spinner">
+        <div className="dashboard__spinner-status" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-        <p className="mt-3">Загружаем ваши экспедиции...</p>
+        <p className="dashboard__spinner-text">Загружаем ваши экспедиции...</p>
       </div>
     );
   }
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="dashboard">
+      <div className="dashboard__header">
         <div>
-          <h1>🏔️ Arctic Expedition Dashboard</h1>
-          <p className="text-muted">
+          <h1 className="dashboard__title">🏔️ Arctic Expedition Dashboard</h1>
+          <p className="dashboard__subtitle">
             Добро пожаловать в систему мониторинга экспедиций
           </p>
         </div>
-        <div>
+        <div className="dashboard__actions">
           {canCreateExpedition() && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="btn btn-primary me-2"
+              className="dashboard__button dashboard__button--primary"
               title="Создать новую экспедицию"
             >
               + Новая экспедиция
@@ -248,48 +248,53 @@ function DashboardPage() {
           {isAdmin() && (
             <button
               onClick={() => navigate("/admin")}
-              className="btn btn-warning me-2"
+              className="dashboard__button dashboard__button--warning"
               title="Перейти в админ-панель"
             >
               👑 Админ-панель
             </button>
           )}
 
-          <button onClick={handleLogout} className="btn btn-outline-danger">
+          <button
+            onClick={handleLogout}
+            className="dashboard__button dashboard__button--outline-danger"
+          >
             Выйти
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="dashboard__alert">
           {error}
           <button
             onClick={loadUserExpeditions}
-            className="btn btn-sm btn-danger ms-3"
+            className="dashboard__alert-button"
           >
             Повторить
           </button>
         </div>
       )}
 
-      <div className="card mb-4">
-        <div className="card-header bg-primary text-white">
-          <h5 className="mb-0">
+      <div className="dashboard__card">
+        <div className="dashboard__card-header dashboard__card-header--primary">
+          <h5 className="dashboard__card-title">
             👑 Мои экспедиции (как руководитель)
-            <span className="badge bg-light text-primary ms-2">
+            <span className="dashboard__badge dashboard__badge--light">
               {expeditions.asLeader.length}
             </span>
           </h5>
         </div>
-        <div className="card-body">
+        <div className="dashboard__card-body">
           {expeditions.asLeader.length === 0 ? (
-            <div className="text-center py-4">
-              <p className="text-muted">Вы еще не создавали экспедиции</p>
+            <div className="dashboard__empty">
+              <p className="dashboard__empty-text">
+                Вы еще не создавали экспедиции
+              </p>
               {canCreateExpedition() && (
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="btn btn-primary"
+                  className="dashboard__button dashboard__button--primary"
                 >
                   Создать первую экспедицию
                 </button>
@@ -307,20 +312,22 @@ function DashboardPage() {
         </div>
       </div>
 
-      <div className="card">
-        <div className="card-header bg-success text-white">
-          <h5 className="mb-0">
+      <div className="dashboard__card">
+        <div className="dashboard__card-header dashboard__card-header--success">
+          <h5 className="dashboard__card-title">
             🧑‍🤝‍🧑 Мои экспедиции (как участник)
-            <span className="badge bg-light text-success ms-2">
+            <span className="dashboard__badge dashboard__badge--light dashboard__badge--success-text">
               {expeditions.asParticipant.length}
             </span>
           </h5>
         </div>
-        <div className="card-body">
+        <div className="dashboard__card-body">
           {expeditions.asParticipant.length === 0 ? (
-            <div className="text-center py-4">
-              <p className="text-muted">Вы еще не участвовали в экспедициях</p>
-              <p className="small text-muted">
+            <div className="dashboard__empty">
+              <p className="dashboard__empty-text">
+                Вы еще не участвовали в экспедициях
+              </p>
+              <p className="dashboard__empty-small">
                 Попросите руководителя добавить вас в экспедицию по вашему
                 индивидуальному номеру
               </p>

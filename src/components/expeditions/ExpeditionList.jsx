@@ -74,42 +74,34 @@ function ExpeditionList({
 
   if (expeditions.length === 0) {
     return (
-      <div className="text-center py-4">
-        <p className="text-muted">Нет экспедиций для отображения</p>
+      <div className="expedition-list__empty">
+        <p className="expedition-list__empty-text">
+          Нет экспедиций для отображения
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="list-group">
+    <div className="expedition-list">
       {expeditions.map((expedition) => (
         <div
           key={expedition.id}
-          className="list-group-item list-group-item-action"
+          className="expedition-list__item"
           onClick={() => handleExpeditionClick(expedition)}
-          style={{ cursor: "pointer" }}
         >
-          <div className="d-flex justify-content-between align-items-start">
-            <div className="flex-grow-1">
-              <h5 className="mb-1">{expedition.name}</h5>
-
-              <p className="mb-1 text-muted">
-                {expedition.description || "Нет описания"}
-              </p>
-
-              <div className="d-flex gap-3 text-muted small mb-2">
-                <div>
-                  <strong>Даты:</strong> {formatDate(expedition.startDate)} -{" "}
-                  {formatDate(expedition.endDate)}
-                </div>
-                <div>
-                  <strong>Руководитель:</strong> {expedition.leaderFirstName}{" "}
-                  {expedition.leaderLastName}
-                </div>
+          <div className="expedition-list__content">
+            <div className="expedition-list__info">
+              <h5 className="expedition-list__title">
+                {expedition.name}{" "}
                 {showRole && expedition.role && (
-                  <div>
+                  <div className="expedition-list__role">
                     <span
-                      className={`badge ${expedition.role === "LEADER" ? "bg-primary" : "bg-success"}`}
+                      className={`expedition-list__badge ${
+                        expedition.role === "LEADER"
+                          ? "expedition-list__badge--primary"
+                          : "expedition-list__badge--success"
+                      }`}
                     >
                       {expedition.role === "LEADER"
                         ? "Руководитель"
@@ -117,20 +109,35 @@ function ExpeditionList({
                     </span>
                   </div>
                 )}
+              </h5>
+
+              <p className="expedition-list__description">
+                {expedition.description || "Нет описания"}
+              </p>
+
+              <div className="expedition-list__meta">
+                <div className="expedition-list__dates">
+                  <strong>Даты:</strong> {formatDate(expedition.startDate)} -{" "}
+                  {formatDate(expedition.endDate)}
+                </div>
+                <div className="expedition-list__leader">
+                  <strong>Руководитель:</strong> {expedition.leaderFirstName}{" "}
+                  {expedition.leaderLastName}
+                </div>
               </div>
 
-              <div className="text-muted small">
+              <div className="expedition-list__created">
                 Создана:{" "}
                 {new Date(expedition.createdAt).toLocaleDateString("ru-RU")}
               </div>
             </div>
 
             <div
-              className="d-flex flex-column gap-2 ms-3"
+              className="expedition-list__actions"
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                className="btn btn-outline-info btn-sm"
+                className="expedition-list__button expedition-list__button--info"
                 onClick={(e) => handleDetailsClick(expedition, e)}
                 title="Подробнее об экспедиции"
               >
@@ -139,7 +146,7 @@ function ExpeditionList({
               {isLeader(expedition) ? (
                 <>
                   <button
-                    className="btn btn-outline-success btn-sm"
+                    className="expedition-list__button expedition-list__button--success"
                     onClick={(e) => handleManageParticipants(expedition, e)}
                     title="Управление участниками"
                   >
@@ -147,7 +154,7 @@ function ExpeditionList({
                   </button>
 
                   <button
-                    className="btn btn-outline-warning btn-sm"
+                    className="expedition-list__button expedition-list__button--warning"
                     onClick={(e) => handleEditExpedition(expedition, e)}
                     title="Редактировать экспедицию"
                   >
@@ -156,13 +163,13 @@ function ExpeditionList({
                 </>
               ) : (
                 <button
-                  className="btn btn-outline-danger btn-sm"
+                  className="expedition-list__button expedition-list__button--danger"
                   onClick={(e) => handleLeaveExpedition(expedition.id, e)}
                   disabled={actionLoading === expedition.id}
                   title="Покинуть экспедицию"
                 >
                   {actionLoading === expedition.id ? (
-                    <span className="spinner-border spinner-border-sm"></span>
+                    <span className="expedition-list__spinner"></span>
                   ) : (
                     "🚪 Покинуть"
                   )}

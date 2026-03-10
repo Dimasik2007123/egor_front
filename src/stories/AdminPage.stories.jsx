@@ -33,7 +33,7 @@ export default {
   title: "Pages/AdminPage",
   component: AdminPage,
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
   },
   decorators: [
     (Story) => {

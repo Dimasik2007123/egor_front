@@ -61,143 +61,146 @@ function AdminPage() {
 
   if (loading) {
     return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status">
+      <div className="admin__spinner">
+        <div className="admin__spinner-status" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-        <p className="mt-3">Загружаем данные...</p>
+        <p className="admin__spinner-text">Загружаем данные...</p>
       </div>
     );
   }
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="admin">
+      {/* Шапка */}
+      <div className="admin__header">
         <div>
-          <h1>👑 Админ-панель</h1>
-          <p className="text-muted">Управление системой Arctic Expedition</p>
+          <h1 className="admin__title">👑 Админ-панель</h1>
+          <p className="admin__subtitle">
+            Управление системой Arctic Expedition
+          </p>
         </div>
-        <div>
+        <div className="admin__actions">
           <button
             onClick={() => navigate("/dashboard")}
-            className="btn btn-outline-secondary me-2"
+            className="admin__button admin__button--outline"
           >
             ← На дашборд
           </button>
-          <button onClick={handleLogout} className="btn btn-outline-danger">
+          <button
+            onClick={handleLogout}
+            className="admin__button admin__button--danger"
+          >
             Выйти
           </button>
         </div>
       </div>
 
-      <div className="row mb-4">
-        <div className="col-md-3">
-          <div className="card bg-primary text-white">
-            <div className="card-body text-center">
-              <h3>{users.length}</h3>
-              <p className="mb-0">Всего пользователей</p>
-            </div>
+      {/* Статистика */}
+      <div className="admin__stats">
+        <div className="admin__stat">
+          <div className="admin__stat-card admin__stat-card--primary">
+            <h3 className="admin__stat-number">{users.length}</h3>
+            <p className="admin__stat-label">Всего пользователей</p>
           </div>
         </div>
-        <div className="col-md-3">
-          <div className="card bg-success text-white">
-            <div className="card-body text-center">
-              <h3>
-                {users.filter((u) => u.roles?.includes("ROLE_ADMIN")).length}
-              </h3>
-              <p className="mb-0">Администраторов</p>
-            </div>
+
+        <div className="admin__stat">
+          <div className="admin__stat-card admin__stat-card--success">
+            <h3 className="admin__stat-number">
+              {users.filter((u) => u.roles?.includes("ROLE_ADMIN")).length}
+            </h3>
+            <p className="admin__stat-label">Администраторов</p>
           </div>
         </div>
-        <div className="col-md-3">
-          <div className="card bg-warning text-dark">
-            <div className="card-body text-center">
-              <h3>
-                {users.filter((u) => u.roles?.includes("ROLE_LEADER")).length}
-              </h3>
-              <p className="mb-0">Руководителей</p>
-            </div>
+
+        <div className="admin__stat">
+          <div className="admin__stat-card admin__stat-card--warning">
+            <h3 className="admin__stat-number">
+              {users.filter((u) => u.roles?.includes("ROLE_LEADER")).length}
+            </h3>
+            <p className="admin__stat-label">Руководителей</p>
           </div>
         </div>
-        <div className="col-md-3">
-          <div className="card bg-info text-white">
-            <div className="card-body text-center">
-              <h3>v1.0</h3>
-              <p className="mb-0">Версия системы</p>
-            </div>
+
+        <div className="admin__stat">
+          <div className="admin__stat-card admin__stat-card--info">
+            <h3 className="admin__stat-number">v1.0</h3>
+            <p className="admin__stat-label">Версия системы</p>
           </div>
         </div>
       </div>
 
-      <div className="card">
-        <div className="card-header">
-          <h5 className="mb-0">Список пользователей</h5>
+      {/* Таблица пользователей */}
+      <div className="admin__table-container">
+        <div className="admin__table-header">
+          <h5 className="admin__table-title">Список пользователей</h5>
         </div>
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Имя</th>
-                  <th>Email</th>
-                  <th>Индивидуальный номер</th>
-                  <th>Роли</th>
-                  <th>Действия</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.id}</td>
-                    <td>
-                      {user.firstName} {user.lastName}
-                    </td>
-                    <td>{user.email}</td>
-                    <td>
-                      <code>{user.individualNumber}</code>
-                    </td>
-                    <td>
+        <div className="admin__table-responsive">
+          <table className="admin__table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Индивидуальный номер</th>
+                <th>Роли</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>
+                    {user.firstName} {user.lastName}
+                  </td>
+                  <td>{user.email}</td>
+                  <td>
+                    <code className="admin__code">{user.individualNumber}</code>
+                  </td>
+                  <td>
+                    <div className="admin__badges">
                       {user.roles?.map((role) => (
                         <span
                           key={role}
-                          className={`badge me-1 ${
+                          className={`admin__badge admin__badge--${
                             role === "ROLE_ADMIN"
-                              ? "bg-danger"
+                              ? "danger"
                               : role === "ROLE_LEADER"
-                                ? "bg-warning text-dark"
-                                : "bg-secondary"
+                                ? "warning"
+                                : "secondary"
                           }`}
                         >
                           {role.replace("ROLE_", "")}
                         </span>
                       ))}
-                    </td>
-                    <td>
-                      <div className="btn-group btn-group-sm">
-                        <button
-                          className="btn btn-outline-primary"
-                          onClick={() => handlePromoteToLeader(user.id)}
-                          disabled={user.roles?.includes("ROLE_LEADER")}
-                          title="Сделать руководителем"
-                        >
-                          👑
-                        </button>
-                        <button
-                          className="btn btn-outline-danger"
-                          onClick={() => handlePromoteToAdmin(user.id)}
-                          disabled={user.roles?.includes("ROLE_ADMIN")}
-                          title="Сделать администратором"
-                        >
-                          ⭐
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div className="admin__button-group">
+                      <button
+                        className="admin__icon-button admin__icon-button--primary"
+                        onClick={() => handlePromoteToLeader(user.id)}
+                        disabled={user.roles?.includes("ROLE_LEADER")}
+                        title="Сделать руководителем"
+                      >
+                        👑
+                      </button>
+                      <button
+                        className="admin__icon-button admin__icon-button--danger"
+                        onClick={() => handlePromoteToAdmin(user.id)}
+                        disabled={user.roles?.includes("ROLE_ADMIN")}
+                        title="Сделать администратором"
+                      >
+                        ⭐
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

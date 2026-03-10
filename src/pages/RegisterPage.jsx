@@ -38,34 +38,34 @@ function RegisterPage() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card shadow">
-            <div className="card-header bg-success text-white">
+    <div className="register">
+      <div className="register__row">
+        <div className="register__column">
+          <div className="refister__card">
+            <div className="register__card-header register__card-header--success">
               <h3>Регистрация</h3>
             </div>
-            <div className="card-body">
-              {error && <div className="alert alert-danger">{error}</div>}
+            <div className="register__card-body">
+              {error && <div className="register__alert">{error}</div>}
 
               <form onSubmit={handleSubmit}>
-                <div className="row">
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label">Имя:</label>
+                <div className="register__form-fields">
+                  <div className="register__form-fields-item--top">
+                    <label className="register__form-label">Имя:</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="register__form-input"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
                       required
                     />
                   </div>
-                  <div className="col-md-6 mb-3">
-                    <label className="form-label">Фамилия:</label>
+                  <div className="register__form-fields-item--top">
+                    <label className="register__form-label">Фамилия:</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="register__form-input"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
@@ -73,11 +73,11 @@ function RegisterPage() {
                   </div>
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label">Email:</label>
+                <div className="register__form-fields-item--bottom">
+                  <label className="register__form-label">Email:</label>
                   <input
                     type="email"
-                    className="form-control"
+                    className="register__form-input"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -85,11 +85,11 @@ function RegisterPage() {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label">Пароль:</label>
+                <div className="register__form-fields-item--bottom">
+                  <label className="register__form-label">Пароль:</label>
                   <input
                     type="password"
-                    className="form-control"
+                    className="register__form-input"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
@@ -99,15 +99,17 @@ function RegisterPage() {
 
                 <button
                   type="submit"
-                  className="btn btn-success w-100"
+                  className="register__button"
                   disabled={loading}
                 >
                   {loading ? "Регистрация..." : "Зарегистрироваться"}
                 </button>
               </form>
 
-              <div className="mt-3 text-center">
-                <Link to="/login">Уже есть аккаунт? Войти</Link>
+              <div className="register__footer">
+                <Link to="/login" className="register__footer-link">
+                  Уже есть аккаунт? Войти
+                </Link>
               </div>
             </div>
           </div>

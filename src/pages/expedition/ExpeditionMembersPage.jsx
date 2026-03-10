@@ -24,25 +24,25 @@ function ExpeditionMembersPage() {
   };
 
   if (loading)
-    return <div className="container mt-5 text-center">Загрузка...</div>;
+    return <div className="members__loading-message">Загрузка...</div>;
 
   return (
-    <div className="container mt-4">
+    <div className="members">
       <button
         onClick={() => navigate("/dashboard")}
-        className="btn btn-outline-secondary mb-3"
+        className="members__button"
       >
         ← Назад
       </button>
-      <h1>Участники экспедиции #{id}</h1>
+      <h1 className="members__title">Участники экспедиции #{id}</h1>
 
-      <div className="row">
-        <div className="col-md-4">
-          <div className="list-group">
+      <div className="members__row">
+        <div className="members__column">
+          <div className="members__list">
             {members.map((member) => (
               <div
                 key={member.individualNumber}
-                className="list-group-item list-group-item-action"
+                className="members__list-item"
                 onClick={() => handleMemberClick(member)}
               >
                 <strong>

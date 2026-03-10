@@ -106,7 +106,7 @@ function ExpeditionDetailPage() {
     if (expedition.role === "USER") {
       return (
         <button
-          className="btn btn-primary"
+          className="expedition-detail__button--metrics"
           onClick={handleViewMyMetrics}
           style={{ minWidth: "200px" }}
         >
@@ -115,12 +115,18 @@ function ExpeditionDetailPage() {
       );
     } else if (expedition.role === "LEADER") {
       return (
-        <div className="d-grid gap-2" style={{ maxWidth: "300px" }}>
-          <button className="btn btn-primary" onClick={handleViewMyMetrics}>
+        <div
+          className="expedition-detail__leader-block"
+          style={{ maxWidth: "300px" }}
+        >
+          <button
+            className="expedition-detail__button--metrics"
+            onClick={handleViewMyMetrics}
+          >
             📊 Мои метрики (как участник)
           </button>
           <button
-            className="btn btn-success"
+            className="expedition-detail__button--management"
             onClick={() => setActiveTab("participants")}
           >
             👥 Управление участниками
@@ -132,22 +138,27 @@ function ExpeditionDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status">
+      <div className="expedition-detail__spinner">
+        <div className="expedition-detail__spinner-status" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-        <p className="mt-3">Загружаем информацию об экспедиции...</p>
+        <p className="expedition-detail__spinner-text">
+          Загружаем информацию об экспедиции...
+        </p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mt-5">
-        <div className="alert alert-danger">
+      <div className="expedition-detail__error">
+        <div className="expedition-detail__error-content">
           <h4>Ошибка</h4>
           <p>{error}</p>
-          <button onClick={handleBack} className="btn btn-primary">
+          <button
+            onClick={handleBack}
+            className="expedition-detail__button--back"
+          >
             Вернуться к списку экспедиций
           </button>
         </div>
@@ -157,10 +168,13 @@ function ExpeditionDetailPage() {
 
   if (!expedition) {
     return (
-      <div className="container mt-5">
-        <div className="alert alert-warning">
+      <div className="expedition-detail__not-found">
+        <div className="expedition-detailt__not-found-content">
           <h4>Экспедиция не найдена</h4>
-          <button onClick={handleBack} className="btn btn-primary">
+          <button
+            onClick={handleBack}
+            className="expedition-detail__button--back"
+          >
             Вернуться к списку экспедиций
           </button>
         </div>
@@ -169,32 +183,37 @@ function ExpeditionDetailPage() {
   }
 
   return (
-    <div className="container mt-4">
-      <div className="mb-4">
-        <button onClick={handleBack} className="btn btn-outline-secondary mb-3">
+    <div className="expedition-detail">
+      <div className="expedition-detail__wrapper">
+        <button
+          onClick={handleBack}
+          className="expedition-detail__button--back"
+        >
           ← Назад к списку экспедиций
         </button>
 
-        <div className="card">
-          <div className="card-header bg-primary text-white">
-            <h2 className="mb-0">🏔️ {expedition.name}</h2>
+        <div className="expedition-detail__card">
+          <div className="expedition-detail__card-header">
+            <h2 className="expedition-detail__card-header-text">
+              🏔️ {expedition.name}
+            </h2>
           </div>
 
           {/* Табы для навигации */}
-          <div className="card-header">
-            <ul className="nav nav-tabs card-header-tabs">
-              <li className="nav-item">
+          <div className="expedition-detail__tabs">
+            <ul className="expedition-detail__tabs-list">
+              <li className="expedition-detail__tabs-list-item">
                 <button
-                  className={`nav-link ${activeTab === "info" ? "active" : ""}`}
+                  className={`expedition-detail__tab-button ${activeTab === "info" ? "expedition-detail__tab-button--active" : ""}`}
                   onClick={() => setActiveTab("info")}
                 >
                   📋 Информация
                 </button>
               </li>
               {expedition.role === "LEADER" && (
-                <li className="nav-item">
+                <li className="expedition-detail__tabs-list-item">
                   <button
-                    className={`nav-link ${activeTab === "participants" ? "active" : ""}`}
+                    className={`expedition-detail__tab-button ${activeTab === "participants" ? "expedition-detail__tab-button--active" : ""}`}
                     onClick={() => setActiveTab("participants")}
                   >
                     👥 Участники ({participants.length})
@@ -204,76 +223,72 @@ function ExpeditionDetailPage() {
             </ul>
           </div>
 
-          <div className="card-body">
+          <div className="expedition-detail__card-body">
             {activeTab === "info" && (
-              <div className="row">
-                <div className="col-md-6">
+              <div className="expedition-detail__card-row">
+                <div className="expedition-detail__card-column">
                   <h5>Информация об экспедиции</h5>
-                  <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
+                  <ul className="expedition-detail__list">
+                    <li className="expedition-detail__list-item">
                       <strong>ID:</strong> {expedition.id}
                     </li>
-                    <li className="list-group-item">
+                    <li className="expedition-detail__list-item">
                       <strong>Руководитель:</strong>{" "}
                       {expedition.leaderFirstName} {expedition.leaderLastName}
                     </li>
-                    <li className="list-group-item">
+                    <li className="expedition-detail__list-item">
                       <strong>Email руководителя:</strong>{" "}
                       {expedition.leaderEmail}
                     </li>
-                    <li className="list-group-item">
+                    <li className="expedition-detail__list-item">
                       <strong>Ваша роль:</strong>
                       <span
-                        className={`badge ms-2 ${
-                          expedition.role === "LEADER"
-                            ? "bg-warning"
-                            : "bg-success"
-                        }`}
+                        className={`expedition-detail__badge ${expedition.role === "LEADER" ? "expedition-detail__badge--warning" : "expedition-detail__badge--success"}`}
                       >
                         {expedition.role === "LEADER"
                           ? "Руководитель"
                           : "Участник"}
                       </span>
                     </li>
-                    <li className="list-group-item">
+                    <li className="expedition-detail__list-item">
                       <strong>Дата начала:</strong>{" "}
                       {new Date(expedition.startDate).toLocaleDateString(
                         "ru-RU",
                       )}
                     </li>
-                    <li className="list-group-item">
+                    <li className="expedition-detail__list-item">
                       <strong>Дата окончания:</strong>{" "}
                       {new Date(expedition.endDate).toLocaleDateString("ru-RU")}
                     </li>
-                    <li className="list-group-item">
+                    <li className="expedition-detail__list-item">
                       <strong>Создана:</strong>{" "}
                       {new Date(expedition.createdAt).toLocaleString("ru-RU")}
                     </li>
                   </ul>
                 </div>
 
-                <div className="col-md-6">
+                <div className="expedition-detail__card-column">
                   <h5>Действия</h5>
-                  <div className="mb-4">{renderActionButtons()}</div>
+                  <div className="expedition-detail__actions">
+                    {renderActionButtons()}
+                  </div>
 
                   <h5>Статистика</h5>
-                  <div className="row text-center">
-                    <div className="col-md-6 mb-3">
-                      <div className="card bg-light">
-                        <div className="card-body">
-                          <h3>👥</h3>
-                          <h4>{participants.length}</h4>
-                          <p className="text-muted">Участников</p>
-                        </div>
+                  <div className="expedition-detail__stats">
+                    <div className="expedition-detail__stats-item">
+                      <div className="expedition-detail__stats-card">
+                        <h3>👥</h3>
+                        <h4>{participants.length}</h4>
+                        <p className="expedition-detail__text--muted">
+                          Участников
+                        </p>
                       </div>
                     </div>
-                    <div className="col-md-6 mb-3">
-                      <div className="card bg-light">
-                        <div className="card-body">
-                          <h3>📊</h3>
-                          <h4>0</h4>
-                          <p className="text-muted">Метрик</p>
-                        </div>
+                    <div className="expedition-detail__stats-item">
+                      <div className="expedition-detail__stats-card">
+                        <h3>📊</h3>
+                        <h4>0</h4>
+                        <p className="expedition-detail__text--muted">Метрик</p>
                       </div>
                     </div>
                   </div>
@@ -282,11 +297,11 @@ function ExpeditionDetailPage() {
             )}
 
             {activeTab === "participants" && expedition.role === "LEADER" && (
-              <div className="participants-section">
-                <div className="d-flex justify-content-between align-items-center mb-4">
+              <div className="expedition-detail__participants">
+                <div className="expedition-detail__participants-header">
                   <h5 className="mb-0">Участники экспедиции</h5>
                   <button
-                    className="btn btn-primary btn-sm"
+                    className="expedition-detail__button expedition-detail__button--add"
                     onClick={handleAddParticipant}
                   >
                     + Добавить участника
@@ -294,27 +309,25 @@ function ExpeditionDetailPage() {
                 </div>
 
                 {participants.length === 0 ? (
-                  <div className="text-center p-5 border rounded">
-                    <div className="mb-3">
-                      <i className="bi bi-people fs-1 text-muted"></i>
-                    </div>
-                    <p className="text-muted">
+                  <div className="expedition-detail__empty-participants">
+                    <div className="expedition-detail__empty-icon">👥</div>
+                    <p className="expedition-details__empty-text--muted">
                       В экспедиции пока нет участников
                     </p>
-                    <p className="small text-muted mb-3">
+                    <p className="expedition-details__empty-text--muted expedition-details__empty-text--small">
                       Добавьте участников по их индивидуальному номеру
                     </p>
                     <button
-                      className="btn btn-primary"
+                      className="expedition-detail__button expedition-detail__button--primary"
                       onClick={handleAddParticipant}
                     >
                       + Добавить первого участника
                     </button>
                   </div>
                 ) : (
-                  <div className="table-responsive">
-                    <table className="table table-hover">
-                      <thead className="table-light">
+                  <div className="expedition-detail__table-responsive">
+                    <table className="expedition-detail__table">
+                      <thead className="expedition-detail__table-head">
                         <tr>
                           <th>Имя</th>
                           <th>Email</th>
@@ -333,14 +346,14 @@ function ExpeditionDetailPage() {
                             </td>
                             <td>{participant.user.email}</td>
                             <td>
-                              <code className="bg-light p-1 rounded">
+                              <code className="expedition-detail__code">
                                 {participant.user.individualNumber}
                               </code>
                             </td>
                             <td>
-                              <div className="btn-group btn-group-sm">
+                              <div className="expedition-detail__btn-group">
                                 <button
-                                  className="btn btn-outline-primary"
+                                  className="expedition-detail__button expedition-detail__button--outline-primary"
                                   onClick={() =>
                                     handleViewParticipantMetrics(
                                       participant.participantId,
@@ -351,7 +364,7 @@ function ExpeditionDetailPage() {
                                   📊 Метрики
                                 </button>
                                 <button
-                                  className="btn btn-outline-danger"
+                                  className="expedition-detail__button expedition-detail__button--outline-danger"
                                   onClick={() =>
                                     handleRemoveParticipant(
                                       participant.participantId,
@@ -370,9 +383,9 @@ function ExpeditionDetailPage() {
                   </div>
                 )}
 
-                <div className="alert alert-info mt-4">
+                <div className="expedition-detail__info">
                   <h6>💡 Информация:</h6>
-                  <ul className="mb-0">
+                  <ul>
                     <li>
                       Чтобы добавить участника, попросите его индивидуальный
                       номер (формат: ARCTIC-XXXXX)
@@ -390,16 +403,16 @@ function ExpeditionDetailPage() {
             )}
 
             {activeTab === "info" && (
-              <div className="mt-4">
+              <div className="expedition-detail__description">
                 <h5>Описание экспедиции</h5>
-                <div className="card">
-                  <div className="card-body">
+                <div className="expedition-detail__description-card">
+                  <div className="expedition-detail__description-card-body">
                     {expedition.description ? (
-                      <p style={{ whiteSpace: "pre-wrap" }}>
+                      <p className="expedition-detail__description-text--wrap">
                         {expedition.description}
                       </p>
                     ) : (
-                      <p className="text-muted">
+                      <p className="expedition-detail__description-text--muted">
                         Описание не добавлено. Вы можете добавить описание при
                         редактировании экспедиции.
                       </p>

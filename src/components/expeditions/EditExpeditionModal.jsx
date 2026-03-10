@@ -44,9 +44,7 @@ function EditExpeditionModal({
     setError("");
 
     try {
-      // onUpdate - это handleUpdateExpedition, который делает PUT
       await onUpdate(formData);
-      // Модалка закроется в DashboardPage после успешного обновления
     } catch (error) {
       setError(
         error.response?.data?.message || "Ошибка при обновлении экспедиции",
@@ -63,10 +61,7 @@ function EditExpeditionModal({
     }
 
     try {
-      // onDelete - это handleDeleteExpedition, который делает DELETE
       await onDelete();
-      // Модалка закроется в DashboardPage после успешного удаления
-      // Не нужно вызывать onClose() здесь, это сделает DashboardPage
     } catch (error) {
       console.error("Delete error:", error);
       setError("Не удалось удалить экспедицию");
@@ -77,31 +72,30 @@ function EditExpeditionModal({
   if (!show || !expedition) return null;
 
   return (
-    <div
-      className="modal show d-block"
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">✏️ Редактировать экспедицию</h5>
+    <div className="edit-modal" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+      <div className="edit-modal__dialog">
+        <div className="edit-modal__content">
+          <div className="edit-modal__header">
+            <h5 className="edit-modal__title">✏️ Редактировать экспедицию</h5>
             <button
               type="button"
-              className="btn-close"
+              className="edit-modal__button-close"
               onClick={onClose}
               disabled={loading}
             ></button>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="modal-body">
-              {error && <div className="alert alert-danger">{error}</div>}
+            <div className="edit-modal__form-body">
+              {error && <div className="edit-modal__alert">{error}</div>}
 
-              <div className="mb-3">
-                <label className="form-label">Название экспедиции *</label>
+              <div className="edit-modal__form-field">
+                <label className="edit-modal__form-label">
+                  Название экспедиции *
+                </label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="edit-modal__form-input"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -110,10 +104,10 @@ function EditExpeditionModal({
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="form-label">Описание</label>
+              <div className="edit-modal__form-field">
+                <label className="edit-modal__form-label">Описание</label>
                 <textarea
-                  className="form-control"
+                  className="edit-modal__form-input"
                   name="description"
                   rows="3"
                   value={formData.description}
@@ -122,12 +116,14 @@ function EditExpeditionModal({
                 />
               </div>
 
-              <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">Дата начала *</label>
+              <div className="edit-modal__row">
+                <div className="edit-modal__column">
+                  <label className="edit-modal__form-label">
+                    Дата начала *
+                  </label>
                   <input
                     type="date"
-                    className="form-control"
+                    className="edit-modal__form-input"
                     name="startDate"
                     value={formData.startDate}
                     onChange={handleChange}
@@ -136,11 +132,13 @@ function EditExpeditionModal({
                   />
                 </div>
 
-                <div className="col-md-6 mb-3">
-                  <label className="form-label">Дата окончания *</label>
+                <div className="edit-modal__column">
+                  <label className="edit-modal__form-label">
+                    Дата окончания *
+                  </label>
                   <input
                     type="date"
-                    className="form-control"
+                    className="edit-modal__form-input"
                     name="endDate"
                     value={formData.endDate}
                     onChange={handleChange}
@@ -151,35 +149,27 @@ function EditExpeditionModal({
               </div>
             </div>
 
-            <div className="modal-footer">
-              <div className="d-flex justify-content-between w-100">
+            <div className="edit-modal__footer">
+              <div className="edit-modal__footer-actions">
                 <div>
                   {!deleteConfirm ? (
                     <button
                       type="button"
-                      className="btn btn-outline-danger"
+                      className="edit-modal__footer-button--outline-danger"
                       onClick={handleDelete}
                       disabled={loading}
                     >
                       🗑️ Удалить экспедицию
                     </button>
                   ) : (
-                    <div className="d-flex gap-2">
+                    <div className="edit-modal__footer-confirm">
                       <button
                         type="button"
-                        className="btn btn-danger"
+                        className="edit-modal__footer-button--danger"
                         onClick={handleDelete}
                         disabled={loading}
                       >
                         ✅ Подтвердить удаление
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => setDeleteConfirm(false)}
-                        disabled={loading}
-                      >
-                        Отмена
                       </button>
                     </div>
                   )}
@@ -188,7 +178,7 @@ function EditExpeditionModal({
                 <div>
                   <button
                     type="button"
-                    className="btn btn-secondary me-2"
+                    className="edit-modal__footer-button--secondary"
                     onClick={onClose}
                     disabled={loading}
                   >
@@ -196,7 +186,7 @@ function EditExpeditionModal({
                   </button>
                   <button
                     type="submit"
-                    className="btn btn-primary"
+                    className="edit-modal__footer-button--primary"
                     disabled={loading}
                   >
                     {loading ? "Сохранение..." : "Сохранить"}

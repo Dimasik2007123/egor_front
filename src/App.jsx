@@ -1,7 +1,8 @@
 // App.js
 import { BrowserRouter, useRoutes } from "react-router-dom";
-//import "./assets/styles.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "./assets/animations.css";
+import "./assets/styles_new.css";
+//import "bootstrap/dist/css/bootstrap.min.css";
 import { routesConfig } from "./routes";
 
 function AppRoutes() {

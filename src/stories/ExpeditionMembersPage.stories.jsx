@@ -31,7 +31,7 @@ export default {
   title: "Modals/ExpeditionMembersPage",
   component: ExpeditionMembersPage,
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
   },
   decorators: [
     (Story) => {

@@ -105,7 +105,7 @@ export const Default = {
     (Story) => (
       <div
         onClickCapture={(e) => {
-          if (e.target.closest(".nav-link")) {
+          if (e.target.closest(".expedition-detail__tab-button")) {
             return;
           }
 

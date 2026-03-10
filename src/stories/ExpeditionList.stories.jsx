@@ -48,7 +48,7 @@ export default {
   title: "Components/ExpeditionList",
   component: ExpeditionList,
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
   },
   decorators: [
     (Story) => (

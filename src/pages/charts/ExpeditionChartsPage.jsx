@@ -26,35 +26,32 @@ function ExpeditionChartsPage() {
   }, [id, indNum]);
 
   if (loading)
-    return (
-      <div className="container mt-5 text-center">Загрузка графиков...</div>
-    );
-  if (!data)
-    return <div className="container mt-5 text-center">Нет данных</div>;
+    return <div className="charts__loading-message">Загрузка графиков...</div>;
+  if (!data) return <div className="charts__empty-message">Нет данных</div>;
 
   return (
-    <div className="container mt-4">
+    <div className="charts">
       <button
         onClick={() => navigate(`/expeditions/${id}/participants`)}
-        className="btn btn-outline-secondary mb-3"
+        className="charts__button"
       >
         ← Выбрать другого участника
       </button>
 
-      <div className="card">
-        <div className="card-header">
-          <ul className="nav nav-tabs card-header-tabs">
-            <li className="nav-item">
+      <div className="charts__card">
+        <div className="charts__card-header">
+          <ul className="charts__nav">
+            <li className="charts__nav-item">
               <button
-                className={`nav-link ${activeChart === "heart-rate" ? "active" : ""}`}
+                className={`charts__nav-link ${activeChart === "charts__nav-link--heart-rate" ? "charts__nav-link--active" : ""}`}
                 onClick={() => setActiveChart("heart-rate")}
               >
                 ❤️ ЧСС
               </button>
             </li>
-            <li className="nav-item">
+            <li className="charts__nav-item">
               <button
-                className={`nav-link ${activeChart === "fatigue" ? "active" : ""}`}
+                className={`charts__nav-link ${activeChart === "charts__nav-link--fatigue" ? "charts__nav-link--active" : ""}`}
                 onClick={() => setActiveChart("fatigue")}
               >
                 😴 Усталость
@@ -62,13 +59,12 @@ function ExpeditionChartsPage() {
             </li>
           </ul>
         </div>
-        <div className="card-body">
+        <div className="charts__card-body">
           {data[activeChart] && (
             <img
               src={data[activeChart]}
               alt="График"
-              className="img-fluid"
-              style={{ maxHeight: "500px" }}
+              className="charts__card-img"
             />
           )}
         </div>

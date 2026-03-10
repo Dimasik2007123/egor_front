@@ -81,7 +81,7 @@ export const Default = {
         onClickCapture={(e) => {
           if (
             e.target.tagName === "BUTTON" ||
-            e.target.closest(".list-group-item")
+            e.target.closest("expedition-detail__list-item")
           ) {
             e.preventDefault();
             e.stopPropagation();

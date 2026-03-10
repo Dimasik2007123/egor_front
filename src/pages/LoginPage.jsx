@@ -32,22 +32,22 @@ function LoginPage() {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card shadow">
-            <div className="card-header bg-primary text-white">
+    <div className="login">
+      <div className="login__row">
+        <div className="login__column">
+          <div className="login__card">
+            <div className="login__card-header login__card-header--primary">
               <h3>Вход в Arctic Metrics</h3>
             </div>
-            <div className="card-body">
-              {error && <div className="alert alert-danger">{error}</div>}
+            <div className="login__card-body">
+              {error && <div className="login__alert">{error}</div>}
 
               <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label className="form-label">Email:</label>
+                <div className="login__form-field">
+                  <label className="login__form-field-label">Email:</label>
                   <input
                     type="email"
-                    className="form-control"
+                    className="login__form-input"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="test@arctic.ru"
@@ -55,11 +55,11 @@ function LoginPage() {
                   />
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label">Пароль:</label>
+                <div className="login__form-field">
+                  <label className="login__form-field-label">Пароль:</label>
                   <input
                     type="password"
-                    className="form-control"
+                    className="login__form-input"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="password123"
@@ -69,15 +69,17 @@ function LoginPage() {
 
                 <button
                   type="submit"
-                  className="btn btn-primary w-100"
+                  className="login__button"
                   disabled={loading}
                 >
                   {loading ? "Вход..." : "Войти"}
                 </button>
               </form>
 
-              <div className="mt-3 text-center">
-                <Link to="/register">Нет аккаунта? Зарегистрироваться</Link>
+              <div className="login__footer">
+                <Link to="/register" className="login__footer-link">
+                  Нет аккаунта? Зарегистрироваться
+                </Link>
               </div>
             </div>
           </div>

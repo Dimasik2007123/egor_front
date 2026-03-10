@@ -103,38 +103,38 @@ function ManageParticipantsModal({
   if (!show) return null;
 
   return (
-    <div
-      className="modal show d-block"
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-    >
-      <div className="modal-dialog modal-lg">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">
+    <div className="participants-modal">
+      <div className="participants-modal__dialog">
+        <div className="participants-modal__content">
+          <div className="participants-modal__header">
+            <h5 className="participants-modal__title">
               🧑‍🤝‍🧑 Участники экспедиции: {expeditionName}
             </h5>
             <button
               type="button"
-              className="btn-close"
+              className="participants-modal__close"
               onClick={onClose}
             ></button>
           </div>
-          <div className="modal-body">
-            {error && <div className="alert alert-danger">{error}</div>}
 
-            <div className="card mb-4">
-              <div className="card-header">Добавить участника</div>
-              <div className="card-body">
-                <div className="input-group mb-3">
+          <div className="participants-modal__body">
+            {error && <div className="participants-modal__alert">{error}</div>}
+
+            <div className="participants-modal__search-card">
+              <div className="participants-modal__search-header">
+                Добавить участника
+              </div>
+              <div className="participants-modal__search-body">
+                <div className="participants-modal__search-group">
                   <input
                     type="text"
-                    className="form-control"
+                    className="participants-modal__input"
                     placeholder="Индивидуальный номер (ARCTIC-XXXXX)"
                     value={individualNumber}
                     onChange={(e) => setIndividualNumber(e.target.value)}
                   />
                   <button
-                    className="btn btn-primary"
+                    className="participants-modal__button participants-modal__button--primary"
                     onClick={searchUserByIndividualNumber}
                     disabled={searching}
                   >
@@ -143,23 +143,23 @@ function ManageParticipantsModal({
                 </div>
 
                 {searchResults.length > 0 && (
-                  <div className="card">
-                    <div className="card-body">
+                  <div className="participants-modal__results-card">
+                    <div className="participants-modal__results-body">
                       {searchResults.map((user) => (
                         <div
                           key={user.id}
-                          className="d-flex justify-content-between align-items-center"
+                          className="participants-modal__results-item"
                         >
                           <div>
                             <strong>
                               {user.firstName} {user.lastName}
                             </strong>
-                            <div className="text-muted small">
+                            <div className="participants-modal__text--muted-small">
                               {user.email} • {user.individualNumber}
                             </div>
                           </div>
                           <button
-                            className="btn btn-success btn-sm"
+                            className="participants-modal__button--success-small"
                             onClick={() =>
                               addParticipant(user.individualNumber)
                             }
@@ -174,48 +174,50 @@ function ManageParticipantsModal({
               </div>
             </div>
 
-            <div className="card">
-              <div className="card-header">
+            <div className="participants-modal__list-card">
+              <div className="participants-modal__list-header">
                 Список участников ({participants.length})
               </div>
-              <div className="card-body">
+              <div className="participants-modal__list-body">
                 {loading ? (
-                  <div className="text-center py-3">
-                    <div className="spinner-border spinner-border-sm"></div>
-                    <p className="mt-2">Загружаем участников...</p>
+                  <div className="participants-modal__loading">
+                    <div className="participants-modal__spinner"></div>
+                    <p className="participants-modal__loading-text">
+                      Загружаем участников...
+                    </p>
                   </div>
                 ) : participants.length === 0 ? (
-                  <p className="text-muted text-center py-3">
+                  <p className="participants-modal__text--muted">
                     В экспедиции пока нет участников
                   </p>
                 ) : (
-                  <div className="list-group">
+                  <div className="participants-modal__items">
                     {participants.map((participant) => (
                       <div
                         key={participant.participantId}
-                        className="list-group-item d-flex justify-content-between align-items-center"
+                        className="participants-modal__item"
                       >
                         <div>
                           <strong>
                             {participant.user.firstName}{" "}
                             {participant.user.lastName}
                           </strong>
-                          <div className="text-muted small">
+                          <div className="participants-modal__text--muted-small">
                             {participant.user.email} •{" "}
                             {participant.user.individualNumber}
                           </div>
-                          <small className="text-muted">
+                          <div className="participants-modal__text--muted-small">
                             Присоединился:{" "}
                             {new Date(
                               participant.joinedAt,
                             ).toLocaleDateString()}
-                          </small>
+                          </div>
                         </div>
                         <button
-                          className="btn btn-outline-danger btn-sm"
+                          className="participants-modal__button--outline-danger-small"
                           onClick={() =>
                             removeParticipant(participant.participantId)
-                          } // ← ИСПРАВЛЕНО!
+                          }
                           title="Удалить из экспедиции"
                         >
                           ✕
@@ -227,10 +229,11 @@ function ManageParticipantsModal({
               </div>
             </div>
           </div>
-          <div className="modal-footer">
+
+          <div className="participants-modal__footer">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="participants-modal__footer-button"
               onClick={onClose}
             >
               Закрыть

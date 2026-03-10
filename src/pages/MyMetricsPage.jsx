@@ -37,105 +37,95 @@ function MyMetricsPage() {
 
   if (loading) {
     return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status">
+      <div className="metrics__spinner">
+        <div className="metrics__spinner-status" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
-        <p className="mt-3">Загружаем ваши метрики...</p>
+        <p className="metrics__spinner-text">Загружаем ваши метрики...</p>
       </div>
     );
   }
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="metrics">
+      <div className="metrics__header">
+        <button onClick={handleBack} className="metrics__back-button">
+          ← Назад к экспедиции
+        </button>
         <div>
-          <button
-            onClick={handleBack}
-            className="btn btn-outline-secondary me-3"
-          >
-            ← Назад к экспедиции
-          </button>
-          <h2 className="d-inline">📊 Мои метрики</h2>
+          <h2 className="metrics__title">📊 Мои метрики</h2>
           {expedition && (
-            <p className="text-muted mb-0">Экспедиция: {expedition.name}</p>
+            <p className="metrics__subtitle">Экспедиция: {expedition.name}</p>
           )}
         </div>
       </div>
 
       {charts?.stats && (
-        <div className="row mb-4">
-          <div className="col-md-3">
-            <div className="card bg-light">
-              <div className="card-body text-center">
-                <h5>😴 Усталость</h5>
-                <h3 className="text-warning">
-                  {charts.stats.fatigue?.avg || "—"}
-                </h3>
-                <small className="text-muted">
-                  мин: {charts.stats.fatigue?.min || "—"} / макс:{" "}
-                  {charts.stats.fatigue?.max || "—"}
-                </small>
-              </div>
+        <div className="metrics__stats">
+          <div className="metrics__stats-column">
+            <div className="metrics__stats-card">
+              <h5 className="metrics__stats-card-title">😴 Усталость</h5>
+              <h3 className="metrics__stats-value">
+                {charts.stats.fatigue?.avg || "—"}
+              </h3>
+              <small className="metrics__stats-range">
+                мин: {charts.stats.fatigue?.min || "—"} / макс:{" "}
+                {charts.stats.fatigue?.max || "—"}
+              </small>
             </div>
           </div>
 
-          <div className="col-md-3">
-            <div className="card bg-light">
-              <div className="card-body text-center">
-                <h5>❤️ Пульс</h5>
-                <h3 className="text-danger">
-                  {charts.stats.heart_rate?.avg || "—"}
-                </h3>
-                <small className="text-muted">
-                  мин: {charts.stats.heart_rate?.min || "—"} / макс:{" "}
-                  {charts.stats.heart_rate?.max || "—"}
-                </small>
-              </div>
+          <div className="metrics__stats-column">
+            <div className="metrics__stats-card">
+              <h5 className="metrics__stats-title">❤️ Пульс</h5>
+              <h3 className="metrics__stats-value">
+                {charts.stats.heart_rate?.avg || "—"}
+              </h3>
+              <small className="metrics__stats-range">
+                мин: {charts.stats.heart_rate?.min || "—"} / макс:{" "}
+                {charts.stats.heart_rate?.max || "—"}
+              </small>
             </div>
           </div>
 
-          <div className="col-md-3">
-            <div className="card bg-light">
-              <div className="card-body text-center">
-                <h5>🎯 Концентрация</h5>
-                <h3 className="text-success">
-                  {charts.stats.concentration?.avg || "—"}
-                </h3>
-                <small className="text-muted">
-                  мин: {charts.stats.concentration?.min || "—"} / макс:{" "}
-                  {charts.stats.concentration?.max || "—"}
-                </small>
-              </div>
+          <div className="metrics__stats-column">
+            <div className="metrics__stats-card">
+              <h5 className="metrics__stats-title">🎯 Концентрация</h5>
+              <h3 className="metrics__stats-value">
+                {charts.stats.concentration?.avg || "—"}
+              </h3>
+              <small className="metrics__stats-range">
+                мин: {charts.stats.concentration?.min || "—"} / макс:{" "}
+                {charts.stats.concentration?.max || "—"}
+              </small>
             </div>
           </div>
 
-          <div className="col-md-3">
-            <div className="card bg-light">
-              <div className="card-body text-center">
-                <h5>📈 Продуктивность</h5>
-                <h3 className="text-primary">
-                  {charts.stats.productivity?.avg || "—"}
-                </h3>
-                <small className="text-muted">
-                  мин: {charts.stats.productivity?.min || "—"} / макс:{" "}
-                  {charts.stats.productivity?.max || "—"}
-                </small>
-              </div>
+          <div className="metrics__stats-column">
+            <div className="metrics__stats-card">
+              <h5 className="metrics__stats-title">📈 Продуктивность</h5>
+              <h3 className="metrics__stats-value">
+                {charts.stats.productivity?.avg || "—"}
+              </h3>
+              <small className="metrics__stats-range">
+                мин: {charts.stats.productivity?.min || "—"} / макс:{" "}
+                {charts.stats.productivity?.max || "—"}
+              </small>
             </div>
           </div>
         </div>
       )}
 
-      {/* Графики */}
-      <div className="row">
+      <div className="metrics__charts">
         {charts?.charts?.fatigue_chart && (
-          <div className="col-md-12 mb-4">
-            <div className="card">
-              <div className="card-header">
-                <h5>📈 Динамика усталости и концентрации</h5>
+          <div className="metrics__charts-full">
+            <div className="metrics__charts-card">
+              <div className="metrics__charts-card-header">
+                <h5 className="metrics__charts-card-title">
+                  📈 Динамика усталости и концентрации
+                </h5>
               </div>
-              <div className="card-body">
+              <div className="metrics__chart-card-body">
                 <div
                   dangerouslySetInnerHTML={{
                     __html: charts.charts.fatigue_chart,
@@ -147,12 +137,14 @@ function MyMetricsPage() {
         )}
 
         {charts?.charts?.heart_rate_chart && (
-          <div className="col-md-6 mb-4">
-            <div className="card">
-              <div className="card-header">
-                <h5>❤️ Частота сердечных сокращений</h5>
+          <div className="metrics__charts-half">
+            <div className="metrics__charts-card">
+              <div className="metrics__charts-card-header">
+                <h5 className="metrics__charts-card-title">
+                  ❤️ Частота сердечных сокращений
+                </h5>
               </div>
-              <div className="card-body">
+              <div className="metrics__charts-card-body">
                 <div
                   dangerouslySetInnerHTML={{
                     __html: charts.charts.heart_rate_chart,
@@ -164,12 +156,14 @@ function MyMetricsPage() {
         )}
 
         {charts?.charts?.composite_chart && (
-          <div className="col-md-6 mb-4">
-            <div className="card">
-              <div className="card-header">
-                <h5>📊 Комбинированные показатели</h5>
+          <div className="metrics__charts-half">
+            <div className="metrics__charts-card">
+              <div className="metrics__charts-card-header">
+                <h5 className="metrics__charts-card-title">
+                  📊 Комбинированные показатели
+                </h5>
               </div>
-              <div className="card-body">
+              <div className="metrics__charts-card-body">
                 <div
                   dangerouslySetInnerHTML={{
                     __html: charts.charts.composite_chart,
@@ -181,21 +175,26 @@ function MyMetricsPage() {
         )}
       </div>
 
-      {/* Информация о данных */}
       {charts && (
-        <div className="alert alert-info">
-          <div className="row">
-            <div className="col-md-4">
-              <h6>👤 Участник:</h6>
-              <p className="mb-0">{localStorage.getItem("userEmail")}</p>
+        <div className="metrics__info">
+          <div className="metrics__info-row">
+            <div className="metrics__info-column">
+              <h6 className="metrics__info-label">👤 Участник:</h6>
+              <p className="metrics__info-value">
+                {localStorage.getItem("userEmail")}
+              </p>
             </div>
-            <div className="col-md-4">
-              <h6>📅 Период:</h6>
-              <p className="mb-0">{charts.period || "Не указано"}</p>
+            <div className="metrics__info-column">
+              <h6 className="metrics__info-label">📅 Период:</h6>
+              <p className="metrics__info-value">
+                {charts.period || "Не указано"}
+              </p>
             </div>
-            <div className="col-md-4">
-              <h6>📊 Измерений:</h6>
-              <p className="mb-0">{charts.total_measurements || 0}</p>
+            <div className="metrics__info-column">
+              <h6 className="metrics__info-label">📊 Измерений:</h6>
+              <p className="metrics__info-value">
+                {charts.total_measurements || 0}
+              </p>
             </div>
           </div>
         </div>
