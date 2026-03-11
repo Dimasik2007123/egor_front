@@ -197,7 +197,7 @@ function MyMetricsPage() {
             <div className="metrics__info-column">
               <h6 className="metrics__info-label">👤 Участник:</h6>
               <p className="metrics__info-value">
-                {localStorage.getItem("lastName") /*GGGGGGG*/}
+                {localStorage.getItem("username") /*GGGGGGG*/}
               </p>
             </div>
             <div className="metrics__info-column">
