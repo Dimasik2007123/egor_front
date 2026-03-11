@@ -104,7 +104,7 @@ function DashboardPage() {
       console.error("Logout error:", error);
     } finally {
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("userEmail");
+      localStorage.removeItem("lastName"); //
       localStorage.removeItem("userRoles");
       navigate("/login");
     }

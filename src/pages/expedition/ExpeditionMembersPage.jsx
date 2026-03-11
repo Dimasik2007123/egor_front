@@ -20,7 +20,9 @@ function ExpeditionMembersPage() {
   }, [id]);
 
   const handleMemberClick = (member) => {
-    navigate(`/charts/expeditions/${id}?indNum=${member.individualNumber}`);
+    navigate(
+      `/charts/expeditions/${id}?indNum=${member.user.individualNumber}`,
+    );
   };
 
   if (loading)

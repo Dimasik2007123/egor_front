@@ -54,7 +54,7 @@ function AdminPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("userEmail");
+    localStorage.removeItem("lastName"); //
     localStorage.removeItem("userRoles");
     navigate("/login");
   };

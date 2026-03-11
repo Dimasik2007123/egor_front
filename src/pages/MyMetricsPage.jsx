@@ -17,9 +17,22 @@ function MyMetricsPage() {
 
   const loadData = async () => {
     try {
-      const expeditionData =
-        await expeditionApi.getExpeditionDetails(expeditionId);
-      setExpedition(expeditionData);
+      const myExpeditions = await expeditionApi.getMyExpeditions();
+
+      const allExpeditions = [
+        ...(myExpeditions.asLeader || []),
+        ...(myExpeditions.asParticipant || []),
+      ];
+
+      const foundExpedition = allExpeditions.find(
+        (exp) => exp.id === parseInt(expeditionId),
+      );
+
+      if (!foundExpedition) {
+        throw new Error("Экспедиция не найдена");
+      }
+
+      setExpedition(foundExpedition);
 
       const chartsData = await chartsApi.getMyCharts(expeditionId);
 
@@ -184,7 +197,7 @@ function MyMetricsPage() {
             <div className="metrics__info-column">
               <h6 className="metrics__info-label">👤 Участник:</h6>
               <p className="metrics__info-value">
-                {localStorage.getItem("userEmail")}
+                {localStorage.getItem("lastName") /*GGGGGGG*/}
               </p>
             </div>
             <div className="metrics__info-column">

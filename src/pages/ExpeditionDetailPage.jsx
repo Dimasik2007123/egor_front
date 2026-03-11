@@ -122,12 +122,6 @@ function ExpeditionDetailPage() {
           >
             📊 Мои метрики (как участник)
           </button>
-          <button
-            className="expedition-detail__button--management"
-            onClick={() => setActiveTab("participants")}
-          >
-            👥 Управление участниками
-          </button>
         </div>
       );
     }

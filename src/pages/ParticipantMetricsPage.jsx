@@ -18,15 +18,30 @@ function ParticipantMetricsPage() {
 
   const loadData = async () => {
     try {
-      const expeditionData =
-        await expeditionApi.getExpeditionDetails(expeditionId);
-      setExpedition(expeditionData);
+      const myExpeditions = await expeditionApi.getMyExpeditions();
+
+      const allExpeditions = [
+        ...(myExpeditions.asLeader || []),
+        ...(myExpeditions.asParticipant || []),
+      ];
+
+      const foundExpedition = allExpeditions.find(
+        (exp) => exp.id === parseInt(expeditionId),
+      );
+
+      if (!foundExpedition) {
+        throw new Error("Экспедиция не найдена");
+      }
+
+      setExpedition(foundExpedition);
 
       const participantsData =
         await expeditionApi.getExpeditionParticipants(expeditionId);
 
+      console.log("Participants data from API:", participantsData);
+
       const foundParticipant = participantsData.find(
-        (p) => p.id.toString() === participantId,
+        (p) => p.participantId.toString() === participantId,
       );
 
       if (!foundParticipant) {
@@ -37,7 +52,7 @@ function ParticipantMetricsPage() {
 
       const chartsData = await chartsApi.getParticipantCharts(
         expeditionId,
-        foundParticipant.individualNumber,
+        foundParticipant.user.individualNumber,
       );
 
       setCharts(chartsData);
@@ -125,13 +140,13 @@ function ParticipantMetricsPage() {
           <div className="participant-metrics__info-row">
             <div className="participant-metrics__info-col">
               <p className="participant-metrics__info-text">
-                <strong>Имя:</strong> {participant.firstName}{" "}
-                {participant.lastName}
+                <strong>Имя:</strong> {participant.user.firstName}{" "}
+                {participant.user.lastName}
               </p>
             </div>
             <div className="participant-metrics__info-col">
               <p className="participant-metrics__info-text">
-                <strong>Email:</strong> {participant.email}
+                <strong>Email:</strong> {participant.user.email}
               </p>
             </div>
             <div className="participant-metrics__info-col">
@@ -139,7 +154,7 @@ function ParticipantMetricsPage() {
                 <strong>Индивидуальный номер:</strong>
               </p>
               <code className="participant-metrics__code">
-                {participant.individualNumber}
+                {participant.user.individualNumber}
               </code>
             </div>
             <div className="participant-metrics__info-col">

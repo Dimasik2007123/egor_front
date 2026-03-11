@@ -17,10 +17,22 @@ function LoginPage() {
 
     try {
       const data = await authApi.login(email, password);
+      console.log("🔥 Полный ответ от сервера:", data);
+      console.log("🔥 Все ключи в ответе:", Object.keys(data));
       localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("userEmail", email);
+      // Сохраняем email (он приходит как lastName!)
+      localStorage.setItem("userEmail", data.lastName);
 
-      localStorage.setItem("userRoles", JSON.stringify(data.userRoles));
+      // Сохраняем роли (если есть)
+      if (data.userRoles) {
+        localStorage.setItem("userRoles", JSON.stringify(data.userRoles));
+      }
+
+      // Сохраняем individualNumber (он приходит как firstName!)
+      if (data.firstName) {
+        localStorage.setItem("individualNumber", data.firstName);
+        console.log("✅ Сохранен individualNumber:", data.firstName);
+      }
 
       navigate("/dashboard");
     } catch (error) {
