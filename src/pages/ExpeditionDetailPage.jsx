@@ -103,7 +103,7 @@ function ExpeditionDetailPage() {
   const renderActionButtons = () => {
     if (!expedition) return null;
 
-    if (expedition.role === "USER") {
+    if (expedition.role === "PARTICIPANT") {
       return (
         <button
           className="expedition-detail__button--metrics"
@@ -264,25 +264,31 @@ function ExpeditionDetailPage() {
                     {renderActionButtons()}
                   </div>
 
-                  <h5>Статистика</h5>
-                  <div className="expedition-detail__stats">
-                    <div className="expedition-detail__stats-item">
-                      <div className="expedition-detail__stats-card">
-                        <h3>👥</h3>
-                        <h4>{participants.length}</h4>
-                        <p className="expedition-detail__text--muted">
-                          Участников
-                        </p>
+                  {expedition.role === "LEADER" && (
+                    <>
+                      <h5>Статистика</h5>
+                      <div className="expedition-detail__stats">
+                        <div className="expedition-detail__stats-item">
+                          <div className="expedition-detail__stats-card">
+                            <h3>👥</h3>
+                            <h4>{participants.length}</h4>
+                            <p className="expedition-detail__text--muted">
+                              Участников
+                            </p>
+                          </div>
+                        </div>
+                        <div className="expedition-detail__stats-item">
+                          <div className="expedition-detail__stats-card">
+                            <h3>📊</h3>
+                            <h4>0</h4>
+                            <p className="expedition-detail__text--muted">
+                              Метрик
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="expedition-detail__stats-item">
-                      <div className="expedition-detail__stats-card">
-                        <h3>📊</h3>
-                        <h4>0</h4>
-                        <p className="expedition-detail__text--muted">Метрик</p>
-                      </div>
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
