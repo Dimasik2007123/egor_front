@@ -36,11 +36,15 @@ const mockChartData = {
 
 const mockParticipants = [
   {
-    id: 101,
-    firstName: "Иван",
-    lastName: "Петров",
-    email: "ivan@arctic.ru",
-    individualNumber: "ARCTIC-001",
+    participantId: 101,
+    user: {
+      id: 1,
+      firstName: "Иван",
+      lastName: "Петров",
+      email: "ivan@arctic.ru",
+      individualNumber: "ARCTIC-001",
+    },
+    joinedAt: "2026-03-01T12:00:00",
   },
 ];
 
@@ -53,7 +57,10 @@ export default {
   decorators: [
     (Story) => {
       chartsApi.getParticipantCharts = async () => mockChartData;
-      expeditionApi.getExpeditionDetails = async () => mockExpedition;
+      expeditionApi.getMyExpeditions = async () => ({
+        asLeader: [mockExpedition],
+        asParticipant: [],
+      });
       expeditionApi.getExpeditionParticipants = async () => mockParticipants;
 
       return (

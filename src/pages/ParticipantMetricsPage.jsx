@@ -123,8 +123,8 @@ function ParticipantMetricsPage() {
           <h2 className="participant-metrics__title">📊 Метрики участника</h2>
           {expedition && (
             <p className="participant-metrics__subtitle">
-              Экспедиция: {expedition.name} | Участник: {participant.firstName}{" "}
-              {participant.lastName}
+              Экспедиция: {expedition.name} | Участник:{" "}
+              {participant.user.firstName} {participant.user.lastName}
             </p>
           )}
         </div>
