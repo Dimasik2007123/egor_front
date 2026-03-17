@@ -27,9 +27,41 @@ function ExpeditionChartsPage() {
             "fatigue",
             indNum,
           );
+          const alphabetathetaUrl = await chartsApi.getChartImage(
+            id,
+            "alpha-beta-theta",
+            indNum,
+          );
+          const psychologicalfatigueUrl = await chartsApi.getChartImage(
+            id,
+            "psychological-fatigue",
+            indNum,
+          );
+          const gravityUrl = await chartsApi.getChartImage(
+            id,
+            "gravity",
+            indNum,
+          );
+          const concentrationUrl = await chartsApi.getChartImage(
+            id,
+            "concentration",
+            indNum,
+          );
+          const relaxationUrl = await chartsApi.getChartImage(
+            id,
+            "relaxation",
+            indNum,
+          );
+          const nlpUrl = await chartsApi.getChartImage(id, "nlp", indNum);
           setChartUrls({
             "heart-rate": heartRateUrl,
             fatigue: fatigueUrl,
+            "alpha-beta-theta": alphabetathetaUrl,
+            "psychological-fatigue": psychologicalfatigueUrl,
+            gravity: gravityUrl,
+            concentration: concentrationUrl,
+            relaxation: relaxationUrl,
+            nlp: nlpUrl,
           });
           setLoading(false);
         } catch {
@@ -42,9 +74,21 @@ function ExpeditionChartsPage() {
     //loadCharts();
   }, [id, indNum]);
 
+  const chartTypes = [
+    { key: "heart-rate", label: "❤️ ЧСС", icon: true },
+    { key: "fatigue", label: "😴 Усталость", icon: false },
+    { key: "alpha-beta-theta", label: "🧠 Альфа-Бета-Тета", icon: false },
+    { key: "psychological-fatigue", label: "🧠 Псих. усталость", icon: false },
+    { key: "gravity", label: "📊 Гравитация", icon: false },
+    { key: "concentration", label: "🎯 Концентрация", icon: false },
+    { key: "relaxation", label: "🧘 Расслабление", icon: false },
+    { key: "nlp", label: "🤖 NLP", icon: false },
+  ];
+
   if (loading)
     return <div className="charts__loading-message">Загрузка графиков...</div>;
-  if (!chartUrls["heart-rate"] && !chartUrls["fatigue"])
+
+  if (Object.values(chartUrls).every((url) => !url))
     return <div className="charts__empty-message">Нет данных</div>;
 
   return (
@@ -59,32 +103,26 @@ function ExpeditionChartsPage() {
       <div className="charts__card">
         <div className="charts__card-header">
           <ul className="charts__nav">
-            <li className="charts__nav-item">
-              <button
-                className={`charts__nav-link ${activeChart === "heart-rate" ? "charts__nav-link--active" : ""}`}
-                onClick={() => {
-                  if (chartUrls["heart-rate"]) {
-                    setActiveChart("heart-rate");
-                  }
-                }}
-                disabled={!chartUrls["heart-rate"]}
-              >
-                <span className="heart-icon">❤️</span> ЧСС
-              </button>
-            </li>
-            <li className="charts__nav-item">
-              <button
-                className={`charts__nav-link ${activeChart === "fatigue" ? "charts__nav-link--active" : ""}`}
-                onClick={() => {
-                  if (chartUrls["fatigue"]) {
-                    setActiveChart("fatigue");
-                  }
-                }}
-                disabled={!chartUrls["fatigue"]}
-              >
-                😴 Усталость
-              </button>
-            </li>
+            {chartTypes.map((chart) => (
+              <li key={chart.key} className="charts__nav-item">
+                <button
+                  className={`charts__nav-link ${activeChart === chart.key ? "charts__nav-link--active" : ""}`}
+                  onClick={() => {
+                    if (chartUrls[chart.key]) {
+                      setActiveChart(chart.key);
+                    }
+                  }}
+                  disabled={!chartUrls[chart.key]}
+                  title={!chartUrls[chart.key] ? "График не доступен" : ""}
+                >
+                  {chart.icon ? (
+                    <span className="heart-icon">{chart.label}</span>
+                  ) : (
+                    chart.label
+                  )}
+                </button>
+              </li>
+            ))}
           </ul>
           {!chartUrls[activeChart] && (
             <div className="charts__empty-message">График не доступен</div>
@@ -94,7 +132,7 @@ function ExpeditionChartsPage() {
           {chartUrls[activeChart] && (
             <img
               src={chartUrls[activeChart]}
-              alt="График"
+              alt={`График ${activeChart}`}
               className="charts__card-img"
             />
           )}
