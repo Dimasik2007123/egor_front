@@ -73,122 +73,68 @@ function MyMetricsPage() {
         </div>
       </div>
 
-      {charts?.stats && (
-        <div className="metrics__stats">
-          <div className="metrics__stats-column">
-            <div className="metrics__stats-card">
-              <h5 className="metrics__stats-card-title">😴 Усталость</h5>
-              <h3 className="metrics__stats-value">
-                {charts.stats.fatigue?.avg || "—"}
-              </h3>
-              <small className="metrics__stats-range">
-                мин: {charts.stats.fatigue?.min || "—"} / макс:{" "}
-                {charts.stats.fatigue?.max || "—"}
-              </small>
-            </div>
-          </div>
-
-          <div className="metrics__stats-column">
-            <div className="metrics__stats-card">
-              <h5 className="metrics__stats-title">
-                <span className="heart-icon">❤️</span> Пульс
-              </h5>
-              <h3 className="metrics__stats-value">
-                {charts.stats.heart_rate?.avg || "—"}
-              </h3>
-              <small className="metrics__stats-range">
-                мин: {charts.stats.heart_rate?.min || "—"} / макс:{" "}
-                {charts.stats.heart_rate?.max || "—"}
-              </small>
-            </div>
-          </div>
-
-          <div className="metrics__stats-column">
-            <div className="metrics__stats-card">
-              <h5 className="metrics__stats-title">🎯 Концентрация</h5>
-              <h3 className="metrics__stats-value">
-                {charts.stats.concentration?.avg || "—"}
-              </h3>
-              <small className="metrics__stats-range">
-                мин: {charts.stats.concentration?.min || "—"} / макс:{" "}
-                {charts.stats.concentration?.max || "—"}
-              </small>
-            </div>
-          </div>
-
-          <div className="metrics__stats-column">
-            <div className="metrics__stats-card">
-              <h5 className="metrics__stats-title">📈 Продуктивность</h5>
-              <h3 className="metrics__stats-value">
-                {charts.stats.productivity?.avg || "—"}
-              </h3>
-              <small className="metrics__stats-range">
-                мин: {charts.stats.productivity?.min || "—"} / макс:{" "}
-                {charts.stats.productivity?.max || "—"}
-              </small>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="metrics__charts">
-        {charts?.charts?.fatigue_chart && (
-          <div className="metrics__charts-full">
-            <div className="metrics__charts-card">
-              <div className="metrics__charts-card-header">
-                <h5 className="metrics__charts-card-title">
-                  📈 Динамика усталости и концентрации
-                </h5>
-              </div>
-              <div className="metrics__chart-card-body">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: charts.charts.fatigue_chart,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+        {charts?.charts?.map((chart) => {
+          let title = "";
+          let icon = "";
 
-        {charts?.charts?.heart_rate_chart && (
-          <div className="metrics__charts-half">
-            <div className="metrics__charts-card">
-              <div className="metrics__charts-card-header">
-                <h5 className="metrics__charts-card-title">
-                  <span className="heart-icon">❤️</span> Частота сердечных
-                  сокращений
-                </h5>
-              </div>
-              <div className="metrics__charts-card-body">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: charts.charts.heart_rate_chart,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+          switch (chart.chartType) {
+            case "heart-rate":
+              title = "Частота сердечных сокращений";
+              icon = "❤️";
+              break;
+            case "fatigue":
+              title = "Усталость";
+              icon = "😴";
+              break;
+            case "psychological-fatigue":
+              title = "Психологическая усталость";
+              icon = "🧠";
+              break;
+            case "concentration":
+              title = "Концентрация";
+              icon = "🎯";
+              break;
+            case "alpha-beta-theta":
+              title = "Альфа-Бета-Тета волны";
+              icon = "🌊";
+              break;
+            case "gravity":
+              title = "Гравитация";
+              icon = "⚖️";
+              break;
+            case "relaxation":
+              title = "Расслабление";
+              icon = "🧘";
+              break;
+            case "nlp":
+              title = "NLP анализ";
+              icon = "🤖";
+              break;
+            default:
+              title = chart.chartType;
+              icon = "📊";
+          }
 
-        {charts?.charts?.composite_chart && (
-          <div className="metrics__charts-half">
-            <div className="metrics__charts-card">
-              <div className="metrics__charts-card-header">
-                <h5 className="metrics__charts-card-title">
-                  📊 Комбинированные показатели
-                </h5>
-              </div>
-              <div className="metrics__charts-card-body">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: charts.charts.composite_chart,
-                  }}
-                />
+          return (
+            <div key={chart.chartType} className="metrics__charts-half">
+              <div className="metrics__charts-card">
+                <div className="metrics__charts-card-header">
+                  <h5 className="metrics__charts-card-title">
+                    {icon} {title}
+                  </h5>
+                </div>
+                <div className="metrics__charts-card-body">
+                  <img
+                    src={chart.imageBase64}
+                    alt={`График ${title}`}
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })}
       </div>
 
       {charts && (
@@ -197,7 +143,7 @@ function MyMetricsPage() {
             <div className="metrics__info-column">
               <h6 className="metrics__info-label">👤 Участник:</h6>
               <p className="metrics__info-value">
-                {localStorage.getItem("username") /*GGGGGGG*/}
+                {localStorage.getItem("userEmail") /*GGGGGGG*/}
               </p>
             </div>
             <div className="metrics__info-column">

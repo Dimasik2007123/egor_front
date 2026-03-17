@@ -3,12 +3,10 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { chartsApi } from "../api/ArcticApi";
 
 const mockChartData = {
-  data: {
-    "heart-rate":
-      "https://python-heart-rate-analysis-toolkit.readthedocs.io/en/latest/_images/output2.jpeg",
-    fatigue:
-      "https://studfile.net/html/2706/963/html_IJIQzckqnY.HSqN/htmlconvd-uCm78s_html_f3cfa24fd0ce1e35.png",
-  },
+  "heart-rate":
+    "https://python-heart-rate-analysis-toolkit.readthedocs.io/en/latest/_images/output2.jpeg",
+  fatigue:
+    "https://studfile.net/html/2706/963/html_IJIQzckqnY.HSqN/htmlconvd-uCm78s_html_f3cfa24fd0ce1e35.png",
 };
 
 export default {
@@ -19,7 +17,9 @@ export default {
   },
   decorators: [
     (Story) => {
-      chartsApi.getExpeditionCharts = async () => mockChartData;
+      chartsApi.getChartImage = async (id, chartType, indNum) => {
+        return mockChartData[chartType];
+      };
 
       return (
         <MemoryRouter

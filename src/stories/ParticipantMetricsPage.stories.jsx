@@ -15,23 +15,46 @@ const mockExpedition = {
   createdAt: "2026-01-10T12:00:00",
 };
 
+const testImageBase64 =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+
 const mockChartData = {
-  stats: {
-    fatigue: { avg: 4.5, min: 2, max: 7 },
-    heart_rate: { avg: 72, min: 65, max: 82 },
-    concentration: { avg: 7.8, min: 6, max: 9 },
-    productivity: { avg: 6.5, min: 5, max: 8 },
-  },
-  charts: {
-    fatigue_chart:
-      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center">График усталости и концентрации</div>',
-    heart_rate_chart:
-      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center">График ЧСС</div>',
-    composite_chart:
-      '<div style="background: #f0f0f0; height: 200px; display: flex; align-items: center; justify-content: center; text-align: center">Комбинированный график</div>',
-  },
-  period: "Март 2026",
-  total_measurements: 150,
+  indNum: "ARCTIC-001",
+  expeditionId: 1,
+  charts: [
+    {
+      chartType: "alpha-beta-theta",
+      imageBase64: testImageBase64,
+    },
+    {
+      chartType: "fatigue",
+      imageBase64: testImageBase64,
+    },
+    {
+      chartType: "heart-rate",
+      imageBase64: testImageBase64,
+    },
+    {
+      chartType: "psychological-fatigue",
+      imageBase64: testImageBase64,
+    },
+    {
+      chartType: "gravity",
+      imageBase64: testImageBase64,
+    },
+    {
+      chartType: "concentration",
+      imageBase64: testImageBase64,
+    },
+    {
+      chartType: "relaxation",
+      imageBase64: testImageBase64,
+    },
+    {
+      chartType: "nlp",
+      imageBase64: testImageBase64,
+    },
+  ],
 };
 
 const mockParticipants = [

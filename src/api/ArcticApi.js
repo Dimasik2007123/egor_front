@@ -75,22 +75,47 @@ export const adminApi = {
 };
 
 export const chartsApi = {
-  getExpeditionCharts: (expeditionId, indNum) =>
-    api
-      .get(`/charts/expeditions/${expeditionId}?indNum=${indNum}`)
-      .then(handleResponse),
+  getParticipantCharts: async (expeditionId, indNum) => {
+    const response = await api.get(`/charts/${expeditionId}/${indNum}`);
+    const data = await response.json();
 
-  getMyCharts: (expeditionId) => {
-    const indNum = localStorage.getItem("individualNumber");
-    return api
-      .get(`/charts/expeditions/${expeditionId}?indNum=${indNum}`)
-      .then(handleResponse);
+    return {
+      ...data,
+      charts: data.charts.map((chart) => ({
+        ...chart,
+        imageBase64: `data:image/png;base64,${btoa(
+          String.fromCharCode(...new Uint8Array(chart.image)),
+        )}`,
+      })),
+    };
   },
 
-  getParticipantCharts: (expeditionId, indNum) =>
+  getChartImage: (expeditionId, chartType, indNum) =>
     api
-      .get(`/charts/expeditions/${expeditionId}?indNum=${indNum}`)
-      .then(handleResponse),
+      .get(
+        `/charts/expeditions/${expeditionId}/${chartType}?indNum=${indNum}`,
+        {
+          headers: { Accept: "image/png" },
+        },
+      )
+      .then((response) => response.blob())
+      .then((blob) => URL.createObjectURL(blob)),
+
+  getMyCharts: async (expeditionId) => {
+    const indNum = localStorage.getItem("individualNumber");
+    const response = await api.get(`/charts/${expeditionId}/${indNum}`);
+    const data = await response.json();
+
+    return {
+      ...data,
+      charts: data.charts.map((chart) => ({
+        ...chart,
+        imageBase64: `data:image/png;base64,${btoa(
+          String.fromCharCode(...new Uint8Array(chart.image)),
+        )}`,
+      })),
+    };
+  },
 };
 
 export default api;

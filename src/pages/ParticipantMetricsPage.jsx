@@ -69,17 +69,6 @@ function ParticipantMetricsPage() {
 
   if (loading) {
     return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3">Загружаем метрики участника...</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
       <div className="participant-metrics__spinner">
         <div className="participant-metrics__spinner-status" role="status">
           <span className="visually-hidden">Loading...</span>
@@ -167,185 +156,71 @@ function ParticipantMetricsPage() {
         </div>
       </div>
 
-      {charts?.stats && (
-        <div className="participant-metrics__stats">
-          <div className="participant-metrics__stats-column">
-            <div className="participant-metrics__stats-card">
-              <h5 className="participant-metrics__stats-title">
-                😴 Средняя усталость
-              </h5>
-              <h3
-                className={`participant-metrics__stats-value ${
-                  charts.stats.fatigue?.avg > 7
-                    ? "participant-metrics__stats-value--danger"
-                    : "participant-metrics__stats-value--warning"
-                }`}
-              >
-                {charts.stats.fatigue?.avg || "—"}
-              </h3>
-              <small className="participant-metrics__stats-range">из 10</small>
-            </div>
-          </div>
-
-          <div className="participant-metrics__stats-column">
-            <div className="participant-metrics__stats-card">
-              <h5 className="participant-metrics__stats-title">
-                <span className="heart-icon">❤️</span> Средний пульс
-              </h5>
-              <h3
-                className={`participant-metrics__stats-value ${
-                  charts.stats.heart_rate?.avg > 100
-                    ? "participant-metrics__stats-value--danger"
-                    : charts.stats.heart_rate?.avg < 60
-                      ? "participant-metrics__stats-value--warning"
-                      : "participant-metrics__stats-value--success"
-                }`}
-              >
-                {charts.stats.heart_rate?.avg || "—"}
-              </h3>
-              <small className="participant-metrics__stats-range">уд/мин</small>
-            </div>
-          </div>
-
-          <div className="participant-metrics__stats-column">
-            <div className="participant-metrics__stats-card">
-              <h5 className="participant-metrics__stats-title">
-                🎯 Средняя концентрация
-              </h5>
-              <h3
-                className={`participant-metrics__stats-value ${
-                  charts.stats.concentration?.avg < 5
-                    ? "participant-metrics__stats-value--danger"
-                    : "participant-metrics__stats-value--success"
-                }`}
-              >
-                {charts.stats.concentration?.avg || "—"}
-              </h3>
-              <small className="participant-metrics__stats-range">из 10</small>
-            </div>
-          </div>
-
-          <div className="participant-metrics__stats-column">
-            <div className="participant-metrics__stats-card">
-              <h5 className="participant-metrics__stats-title">
-                📈 Средняя продуктивность
-              </h5>
-              <h3
-                className={`participant-metrics__stats-value ${
-                  charts.stats.productivity?.avg < 5
-                    ? "participant-metrics__stats-value--danger"
-                    : "participant-metrics__stats-value--primary"
-                }`}
-              >
-                {charts.stats.productivity?.avg || "—"}
-              </h3>
-              <small className="participant-metrics__stats-range">из 10</small>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="participant-metrics__charts">
-        {charts?.charts?.fatigue_chart && (
-          <div className="participant-metrics__charts-full">
-            <div className="participant-metrics__charts-card">
-              <div className="participant-metrics__charts-header">
-                <h5 className="participant-metrics__charts-title">
-                  📈 Динамика усталости и концентрации
-                </h5>
-              </div>
-              <div className="participant-metrics__charts-body">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: charts.charts.fatigue_chart,
-                  }}
-                />
+        {charts?.charts?.map((chart) => {
+          let title = "";
+          let icon = "";
+
+          switch (chart.chartType) {
+            case "heart-rate":
+              title = "Частота сердечных сокращений";
+              icon = "❤️";
+              break;
+            case "fatigue":
+              title = "Усталость";
+              icon = "😴";
+              break;
+            case "psychological-fatigue":
+              title = "Психологическая усталость";
+              icon = "🧠";
+              break;
+            case "concentration":
+              title = "Концентрация";
+              icon = "🎯";
+              break;
+            case "alpha-beta-theta":
+              title = "Альфа-Бета-Тета волны";
+              icon = "🌊";
+              break;
+            case "gravity":
+              title = "Гравитация";
+              icon = "⚖️";
+              break;
+            case "relaxation":
+              title = "Расслабление";
+              icon = "🧘";
+              break;
+            case "nlp":
+              title = "NLP анализ";
+              icon = "🤖";
+              break;
+            default:
+              title = chart.chartType;
+              icon = "📊";
+          }
+
+          return (
+            <div
+              key={chart.chartType}
+              className="participant-metrics__charts-half"
+            >
+              <div className="participant-metrics__charts-card">
+                <div className="participant-metrics__charts-card-header">
+                  <h5 className="participant-metrics__charts-card-title">
+                    {icon} {title}
+                  </h5>
+                </div>
+                <div className="participant-metrics__charts-card-body">
+                  <img
+                    src={chart.imageBase64}
+                    alt={`График ${title}`}
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {charts?.charts?.heart_rate_chart && (
-          <div className="participant-metrics__charts-half">
-            <div className="participant-metrics__charts-card">
-              <div className="participant-metrics__charts-card-header">
-                <h5 className="participant-metrics__charts-card-title">
-                  <span className="heart-icon">❤️</span> Частота сердечных
-                  сокращений
-                </h5>
-              </div>
-              <div className="participant-metrics__charts-body">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: charts.charts.heart_rate_chart,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {charts?.charts?.composite_chart && (
-          <div className="participant-metrics__charts-half">
-            <div className="participant-metrics__charts-card">
-              <div className="participant-metrics__charts-card-header">
-                <h5 className="participant-metrics__charts-card-title">
-                  📊 Комбинированные показатели
-                </h5>
-              </div>
-              <div className="participant-metrics__charts-card-body">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: charts.charts.composite_chart,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="participant-metrics__recommendations">
-        <div className="participant-metrics__recommendations-header">
-          <h5 className="participant-metrics__recommendations-title">
-            💡 Рекомендации для руководителя
-          </h5>
-        </div>
-        <div className="participant-metrics__recommendations-body">
-          {charts?.stats && (
-            <>
-              {charts.stats.fatigue?.avg > 7 && (
-                <div className="participant-metrics__alert--warning">
-                  <strong>⚠️ Высокий уровень усталости:</strong> Рекомендуется
-                  дать участнику отдых или снизить нагрузку.
-                </div>
-              )}
-
-              {charts.stats.heart_rate?.avg > 100 && (
-                <div className="participant-metrics__alert--danger">
-                  <strong>🚨 Высокий пульс:</strong> Участник испытывает
-                  повышенную нагрузку. Проверьте его физическое состояние.
-                </div>
-              )}
-
-              {charts.stats.concentration?.avg < 5 && (
-                <div className="participant-metrics__alert--warning">
-                  <strong>⚠️ Низкая концентрация:</strong> Участнику может быть
-                  трудно выполнять сложные задачи.
-                </div>
-              )}
-
-              {charts.stats.fatigue?.avg <= 7 &&
-                charts.stats.heart_rate?.avg <= 100 &&
-                charts.stats.concentration?.avg >= 5 && (
-                  <div className="participant-metrics__alert--success">
-                    <strong>✅ Состояние в норме:</strong> Участник в хорошей
-                    форме для продолжения работы.
-                  </div>
-                )}
-            </>
-          )}
-        </div>
+          );
+        })}
       </div>
     </div>
   );
