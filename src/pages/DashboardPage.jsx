@@ -45,7 +45,7 @@ function DashboardPage() {
     return isAdmin() || isLeader();
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     checkAuthAndLoadData();
 
     const loadUserData = async () => {
@@ -53,10 +53,12 @@ function DashboardPage() {
         const individualNumber = localStorage.getItem("individualNumber");
         if (individualNumber) {
           const data = await userApi.searchByIndividualNumber(individualNumber);
-          setUser(`${data.firstName || ""} ${data.lastName || ""}`.trim());
+          const name = data.firstName;
+          const lastName = data.lastName;
+          setUser(name + " " + lastName);
         }
-      } catch (error) {
-        console.error("Failed to load user data:", error);
+      } catch (err) {
+        console.log(err);
       }
     };
 
@@ -315,11 +317,8 @@ function DashboardPage() {
             </div>
             <div className="participant-metrics__info-col">
               <p className="participant-metrics__info-text">
-                <strong>Имя:</strong>
+                <strong>Имя:</strong> {user || "Не указано"}
               </p>
-              <code className="participant-metrics__code">
-                {user || "Не указан"}
-              </code>
             </div>
           </div>
         </div>
