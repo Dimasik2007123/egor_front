@@ -146,18 +146,6 @@ function MyMetricsPage() {
                 {localStorage.getItem("userEmail") /*GGGGGGG*/}
               </p>
             </div>
-            <div className="metrics__info-column">
-              <h6 className="metrics__info-label">📅 Период:</h6>
-              <p className="metrics__info-value">
-                {charts.period || "Не указано"}
-              </p>
-            </div>
-            <div className="metrics__info-column">
-              <h6 className="metrics__info-label">📊 Измерений:</h6>
-              <p className="metrics__info-value">
-                {charts.total_measurements || 0}
-              </p>
-            </div>
           </div>
         </div>
       )}
