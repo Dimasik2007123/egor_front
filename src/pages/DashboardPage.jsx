@@ -17,6 +17,7 @@ function DashboardPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showParticipantsModal, setShowParticipantsModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [user, setUser] = useState(null);
   const [selectedExpedition, setSelectedExpedition] = useState(null);
   const navigate = useNavigate();
 
@@ -44,8 +45,22 @@ function DashboardPage() {
     return isAdmin() || isLeader();
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     checkAuthAndLoadData();
+
+    const loadUserData = async () => {
+      try {
+        const individualNumber = localStorage.getItem("individualNumber");
+        if (individualNumber) {
+          const data = await userApi.searchByIndividualNumber(individualNumber);
+          setUser(`${data.firstName || ""} ${data.lastName || ""}`.trim());
+        }
+      } catch (error) {
+        console.error("Failed to load user data:", error);
+      }
+    };
+
+    loadUserData();
   }, []);
 
   const checkAuthAndLoadData = async () => {
@@ -279,6 +294,40 @@ function DashboardPage() {
       <div className="dashboard__card">
         <div className="dashboard__card-header dashboard__card-header--primary">
           <h5 className="dashboard__card-title">
+            👤 Информация о текущем пользователе
+          </h5>
+        </div>
+        <div className="dashboard__card-body">
+          <div className="participant-metrics__info-row">
+            <div className="participant-metrics__info-col">
+              <p className="participant-metrics__info-text">
+                <strong>Email:</strong>{" "}
+                {localStorage.getItem("userEmail") || "Не указан"}
+              </p>
+            </div>
+            <div className="participant-metrics__info-col">
+              <p className="participant-metrics__info-text">
+                <strong>Индивидуальный номер:</strong>
+              </p>
+              <code className="participant-metrics__code">
+                {localStorage.getItem("individualNumber") || "Не указан"}
+              </code>
+            </div>
+            <div className="participant-metrics__info-col">
+              <p className="participant-metrics__info-text">
+                <strong>Имя:</strong>
+              </p>
+              <code className="participant-metrics__code">
+                {user || "Не указан"}
+              </code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="dashboard__card">
+        <div className="dashboard__card-header dashboard__card-header--primary">
+          <h5 className="dashboard__card-title">
             👑 Мои экспедиции (как руководитель)
             <span className="dashboard__badge dashboard__badge--light">
               {expeditions.asLeader.length}
@@ -303,7 +352,7 @@ function DashboardPage() {
           ) : (
             <ExpeditionList
               expeditions={expeditions.asLeader}
-              showRole={false}
+              showRole={true}
               onRefresh={loadUserExpeditions}
               onManageParticipants={handleManageParticipants}
               onEditExpedition={handleEditExpedition}
@@ -335,7 +384,7 @@ function DashboardPage() {
           ) : (
             <ExpeditionList
               expeditions={expeditions.asParticipant}
-              showRole={false}
+              showRole={true}
               onRefresh={loadUserExpeditions}
               onManageParticipants={handleManageParticipants}
               onEditExpedition={handleEditExpedition}

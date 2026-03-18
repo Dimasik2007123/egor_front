@@ -61,6 +61,30 @@ export default {
       expeditionApi.getMyExpeditions = mockApi.getMyExpeditions;
       authApi.logout = mockApi.logout;
 
+      const originalLocalStorage = global.localStorage;
+
+      const mockStorage = {
+        ...originalLocalStorage,
+        getItem: (key) => {
+          if (key === "userEmail") return "ivan@arctic.ru";
+          if (key === "individualNumber") return "ARCTIC-001";
+          return originalLocalStorage.getItem(key);
+        },
+      };
+
+      Object.defineProperty(global, "localStorage", {
+        value: mockStorage,
+        writable: true,
+        configurable: true,
+      });
+
+      userApi.searchByIndividualNumber = async () => ({
+        firstName: "Иван",
+        lastName: "Петров",
+        email: "ivan@arctic.ru",
+        individualNumber: "ARCTIC-001",
+      });
+
       return (
         <MemoryRouter initialEntries={["/dashboard"]}>
           <Routes>
