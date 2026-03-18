@@ -121,18 +121,3 @@ export const Default = {
     ),
   ],
 };
-
-export const HighFatigue = {
-  decorators: [
-    (Story) => {
-      chartsApi.getParticipantCharts = async () => ({
-        ...mockChartData,
-        stats: {
-          ...mockChartData.stats,
-          fatigue: { avg: 8.5, min: 7, max: 9 }, // > 7
-        },
-      });
-      return <Story />;
-    },
-  ],
-};

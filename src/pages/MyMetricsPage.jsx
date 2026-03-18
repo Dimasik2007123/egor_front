@@ -9,6 +9,7 @@ function MyMetricsPage() {
 
   const [loading, setLoading] = useState(true);
   const [charts, setCharts] = useState(null);
+  const [expeditionData, setExpeditionData] = useState(null);
   const [expedition, setExpedition] = useState(null);
 
   useEffect(() => {
@@ -33,6 +34,9 @@ function MyMetricsPage() {
       }
 
       setExpedition(foundExpedition);
+
+      const expData = await expeditionApi.getExpeditionDetails(expeditionId);
+      setExpeditionData(expData);
 
       const chartsData = await chartsApi.getMyCharts(expeditionId);
 
@@ -144,6 +148,13 @@ function MyMetricsPage() {
               <h6 className="metrics__info-label">👤 Участник:</h6>
               <p className="metrics__info-value">
                 {localStorage.getItem("userEmail") /*GGGGGGG*/}
+              </p>
+            </div>
+            <div className="metrics__info-column">
+              <h6 className="metrics__info-label">📅 Период:</h6>
+              <p className="metrics__info-value">
+                {expeditionData.startDate + " - " + expeditionData.endDate ||
+                  "Не указано"}
               </p>
             </div>
           </div>

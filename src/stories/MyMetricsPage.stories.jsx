@@ -66,6 +66,10 @@ export default {
   decorators: [
     (Story) => {
       chartsApi.getMyCharts = async () => mockChartData;
+      expeditionApi.getMyExpeditions = async () => ({
+        asLeader: [mockExpedition],
+        asParticipant: [],
+      });
       expeditionApi.getExpeditionDetails = async () => mockExpedition;
 
       return (
