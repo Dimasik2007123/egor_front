@@ -60,7 +60,7 @@ function ParticipantMetricsPage() {
           concentrationUrl,
           relaxationUrl,
           nfbUrl,
-        ] = await Promise.all([
+        ] = await Promise.allSettled([
           chartsApi.getChartImage(expeditionId, "heart-rate", indNum),
           chartsApi.getChartImage(expeditionId, "fatigue", indNum),
           chartsApi.getChartImage(expeditionId, "alpha-beta-theta", indNum),
