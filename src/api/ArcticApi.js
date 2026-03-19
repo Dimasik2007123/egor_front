@@ -118,4 +118,11 @@ export const chartsApi = {
   },
 };
 
+export const analyticsApi = {
+  getAdvice: (expeditionId, indNum) =>
+    api
+      .get(`/analytics/advices/${indNum}/${expeditionId}`)
+      .then(handleResponse),
+};
+
 export default api;

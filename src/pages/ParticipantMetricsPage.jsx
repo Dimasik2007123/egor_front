@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 //import axios from 'axios';
-import { chartsApi, expeditionApi } from "../api/ArcticApi";
+import { chartsApi, expeditionApi, analyticsApi } from "../api/ArcticApi";
 
 function ParticipantMetricsPage() {
   const { expeditionId, participantId } = useParams();
@@ -9,6 +9,7 @@ function ParticipantMetricsPage() {
 
   const [loading, setLoading] = useState(true);
   const [charts, setCharts] = useState(null);
+  const [advice, setAdvice] = useState(null);
   const [participant, setParticipant] = useState(null);
   const [expedition, setExpedition] = useState(null);
 
@@ -56,6 +57,13 @@ function ParticipantMetricsPage() {
       );
 
       setCharts(chartsData);
+
+      const adviceData = await analyticsApi.getAdvice(
+        expeditionId,
+        foundParticipant.user.individualNumber,
+      );
+      setAdvice(adviceData);
+
       setLoading(false);
     } catch (error) {
       console.error("Failed to load participant metrics:", error);
@@ -190,8 +198,8 @@ function ParticipantMetricsPage() {
               title = "Расслабление";
               icon = "🧘";
               break;
-            case "nlp":
-              title = "NLP анализ";
+            case "nfb":
+              title = "NFB анализ";
               icon = "🤖";
               break;
             default:
@@ -222,6 +230,21 @@ function ParticipantMetricsPage() {
           );
         })}
       </div>
+
+      {advice && (
+        <div className="participant-metrics__recommendations">
+          <div className="participant-metrics__recommendations-header">
+            <h5 className="participant-metrics__recommendations-title">
+              💡 Совет от нейросети
+            </h5>
+          </div>
+          <div className="participant-metrics__recommendations-body">
+            <div className="participant-metrics__alert--info">
+              {advice.response}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

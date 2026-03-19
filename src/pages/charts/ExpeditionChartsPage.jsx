@@ -52,7 +52,7 @@ function ExpeditionChartsPage() {
             "relaxation",
             indNum,
           );
-          const nlpUrl = await chartsApi.getChartImage(id, "nlp", indNum);
+          const nfbUrl = await chartsApi.getChartImage(id, "nfb", indNum);
           setChartUrls({
             "heart-rate": heartRateUrl,
             fatigue: fatigueUrl,
@@ -61,7 +61,7 @@ function ExpeditionChartsPage() {
             gravity: gravityUrl,
             concentration: concentrationUrl,
             relaxation: relaxationUrl,
-            nlp: nlpUrl,
+            nfb: nfbUrl,
           });
           setLoading(false);
         } catch {
@@ -82,7 +82,7 @@ function ExpeditionChartsPage() {
     { key: "gravity", label: "📊 Гравитация", icon: false },
     { key: "concentration", label: "🎯 Концентрация", icon: false },
     { key: "relaxation", label: "🧘 Расслабление", icon: false },
-    { key: "nlp", label: "🤖 NLP", icon: false },
+    { key: "nfb", label: "🤖 NFB", icon: false },
   ];
 
   if (loading)

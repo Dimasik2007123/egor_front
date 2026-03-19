@@ -17,7 +17,7 @@ const mockChartData = {
     "https://avatars.dzeninfra.ru/get-zen_doc/1362956/pub_5adc6d46bce67e90d2a46acf_5adc6db100b3ddc88a039985/scale_1200",
   relaxation:
     "https://img.freepik.com/premium-vector/serene-woman-relaxing-mat-vector-illustration_1316704-34671.jpg?semt=ais_hybrid",
-  nlp: "https://психолог-иваново.рф/img/u/68da3f08658e1.png",
+  nfb: "https://психолог-иваново.рф/img/u/68da3f08658e1.png",
 };
 
 export default {

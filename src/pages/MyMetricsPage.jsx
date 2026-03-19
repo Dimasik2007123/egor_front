@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 //import axios from 'axios';
-import { chartsApi, expeditionApi } from "../api/ArcticApi";
+import { chartsApi, expeditionApi, analyticsApi } from "../api/ArcticApi";
 
 function MyMetricsPage() {
   const { expeditionId } = useParams();
@@ -9,6 +9,7 @@ function MyMetricsPage() {
 
   const [loading, setLoading] = useState(true);
   const [charts, setCharts] = useState(null);
+  const [advice, setAdvice] = useState(null);
   const [expeditionData, setExpeditionData] = useState(null);
   const [expedition, setExpedition] = useState(null);
 
@@ -41,6 +42,12 @@ function MyMetricsPage() {
       const chartsData = await chartsApi.getMyCharts(expeditionId);
 
       setCharts(chartsData);
+      const individualNumber = localStorage.getItem("individualNumber");
+      const adviceData = await analyticsApi.getAdvice(
+        expeditionId,
+        individualNumber,
+      );
+      setAdvice(adviceData);
       setLoading(false);
     } catch (error) {
       console.error("Failed to load metrics:", error);
@@ -111,8 +118,8 @@ function MyMetricsPage() {
               title = "Расслабление";
               icon = "🧘";
               break;
-            case "nlp":
-              title = "NLP анализ";
+            case "nfb":
+              title = "NFB анализ";
               icon = "🤖";
               break;
             default:
@@ -156,6 +163,21 @@ function MyMetricsPage() {
                 {expeditionData.startDate + " - " + expeditionData.endDate ||
                   "Не указано"}
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {advice && (
+        <div className="participant-metrics__recommendations">
+          <div className="participant-metrics__recommendations-header">
+            <h5 className="participant-metrics__recommendations-title">
+              💡 Совет от нейросети
+            </h5>
+          </div>
+          <div className="participant-metrics__recommendations-body">
+            <div className="participant-metrics__alert--info">
+              {advice.response}
             </div>
           </div>
         </div>

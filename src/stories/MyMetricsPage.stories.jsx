@@ -1,5 +1,5 @@
 import MyMetricsPage from "../pages/MyMetricsPage";
-import { chartsApi, expeditionApi } from "../api/ArcticApi";
+import { chartsApi, expeditionApi, analyticsApi } from "../api/ArcticApi";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 const mockExpedition = {
@@ -51,7 +51,7 @@ const mockChartData = {
       imageBase64: testImageBase64,
     },
     {
-      chartType: "nlp",
+      chartType: "nfb",
       imageBase64: testImageBase64,
     },
   ],
@@ -71,6 +71,9 @@ export default {
         asParticipant: [],
       });
       expeditionApi.getExpeditionDetails = async () => mockExpedition;
+      analyticsApi.getAdvice = async () => ({
+        response: "Соблюдайте режим питания и сна",
+      });
 
       return (
         <MemoryRouter initialEntries={["/expeditions/1/my-metrics"]}>
