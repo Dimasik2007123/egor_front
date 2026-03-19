@@ -54,16 +54,7 @@ function MyMetricsPage() {
       const indNum = localStorage.getItem("individualNumber");
 
       if (indNum) {
-        const [
-          heartRateUrl,
-          fatigueUrl,
-          alphabetathetaUrl,
-          psychologicalfatigueUrl,
-          gravityUrl,
-          concentrationUrl,
-          relaxationUrl,
-          nfbUrl,
-        ] = await Promise.allSettled([
+        const results = await Promise.allSettled([
           chartsApi.getChartImage(expeditionId, "heart-rate", indNum),
           chartsApi.getChartImage(expeditionId, "fatigue", indNum),
           chartsApi.getChartImage(expeditionId, "alpha-beta-theta", indNum),
@@ -79,14 +70,19 @@ function MyMetricsPage() {
         ]);
 
         setChartUrls({
-          "heart-rate": heartRateUrl,
-          fatigue: fatigueUrl,
-          "alpha-beta-theta": alphabetathetaUrl,
-          "psychological-fatigue": psychologicalfatigueUrl,
-          gravity: gravityUrl,
-          concentration: concentrationUrl,
-          relaxation: relaxationUrl,
-          nfb: nfbUrl,
+          "heart-rate":
+            results[0].status === "fulfilled" ? results[0].value : null,
+          fatigue: results[1].status === "fulfilled" ? results[1].value : null,
+          "alpha-beta-theta":
+            results[2].status === "fulfilled" ? results[2].value : null,
+          "psychological-fatigue":
+            results[3].status === "fulfilled" ? results[3].value : null,
+          gravity: results[4].status === "fulfilled" ? results[4].value : null,
+          concentration:
+            results[5].status === "fulfilled" ? results[5].value : null,
+          relaxation:
+            results[6].status === "fulfilled" ? results[6].value : null,
+          nfb: results[7].status === "fulfilled" ? results[7].value : null,
         });
 
         const adviceData = await analyticsApi.getAdvice(expeditionId, indNum);
