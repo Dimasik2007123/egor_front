@@ -52,6 +52,34 @@ function AdminPage() {
     }
   };
 
+  const handleDeleteAdminRole = async (userId) => {
+    if (window.confirm("Удалить у пользователя роль администратора?")) {
+      try {
+        await adminApi.deleteAdminRole(userId);
+
+        alert("Пользователь теперь не администратор!");
+        loadUsers();
+      } catch (error) {
+        console.error("Failed to delete admin role:", error);
+        alert("Ошибка при удалении роли");
+      }
+    }
+  };
+
+  const handleDeleteLeaderRole = async (userId) => {
+    if (window.confirm("Удалить у пользователя роль руководителя?")) {
+      try {
+        await adminApi.deleteLeaderRole(userId);
+
+        alert("Пользователь теперь не руководитель!");
+        loadUsers();
+      } catch (error) {
+        console.error("Failed to delete leader role:", error);
+        alert("Ошибка при удалении роли");
+      }
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("username");
@@ -179,22 +207,41 @@ function AdminPage() {
                   </td>
                   <td>
                     <div className="admin__button-group">
-                      <button
-                        className="admin__icon-button admin__icon-button--primary"
-                        onClick={() => handlePromoteToLeader(user.id)}
-                        disabled={user.roles?.includes("ROLE_LEADER")}
-                        title="Сделать руководителем"
-                      >
-                        👑
-                      </button>
-                      <button
-                        className="admin__icon-button admin__icon-button--danger"
-                        onClick={() => handlePromoteToAdmin(user.id)}
-                        disabled={user.roles?.includes("ROLE_ADMIN")}
-                        title="Сделать администратором"
-                      >
-                        ⭐
-                      </button>
+                      {!user.roles?.includes("ROLE_LEADER") ? (
+                        <button
+                          className="admin__icon-button admin__icon-button--primary"
+                          onClick={() => handlePromoteToLeader(user.id)}
+                          title="Сделать руководителем"
+                        >
+                          👑
+                        </button>
+                      ) : (
+                        <button
+                          className="admin__icon-button admin__icon-button--outline-danger"
+                          onClick={() => handleDeleteLeaderRole(user.id)}
+                          title="Удалить роль руководителя"
+                        >
+                          👑
+                        </button>
+                      )}
+
+                      {!user.roles?.includes("ROLE_ADMIN") ? (
+                        <button
+                          className="admin__icon-button admin__icon-button--danger"
+                          onClick={() => handlePromoteToAdmin(user.id)}
+                          title="Сделать администратором"
+                        >
+                          ⭐
+                        </button>
+                      ) : (
+                        <button
+                          className="admin__icon-button admin__icon-button--outline-danger"
+                          onClick={() => handleDeleteAdminRole(user.id)}
+                          title="Удалить роль администратора"
+                        >
+                          ⭐
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

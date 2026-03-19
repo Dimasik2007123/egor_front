@@ -72,6 +72,12 @@ export const adminApi = {
 
   promoteToAdmin: (userId) =>
     api.patch(`/admin/users/${userId}/roles/admin`, {}).then(handleResponse),
+
+  deleteAdminRole: (userId) =>
+    api.delete(`/admin/users/${userId}/roles/admin`, {}).then(handleResponse),
+
+  deleteLeaderRole: (userId) =>
+    api.delete(`/admin/users/${userId}/roles/leader`, {}).then(handleResponse),
 };
 
 export const chartsApi = {

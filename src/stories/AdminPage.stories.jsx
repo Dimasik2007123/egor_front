@@ -40,6 +40,8 @@ export default {
       adminApi.getUsers = async () => mockUsers;
       adminApi.promoteToAdmin = async (userId) => null;
       adminApi.promoteToLeader = async (userId) => null;
+      adminApi.deleteAdminRole = async (userId) => null;
+      adminApi.deleteLeaderRole = async (userId) => null;
       return (
         <MemoryRouter initialEntries={["/admin"]}>
           <Routes>
