@@ -15,46 +15,22 @@ const mockExpedition = {
   createdAt: "2026-01-10T12:00:00",
 };
 
-const testImageBase64 =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
-
-const mockChartData = {
-  indNum: "ARCTIC-001",
-  expeditionId: 1,
-  charts: [
-    {
-      chartType: "alpha-beta-theta",
-      imageBase64: testImageBase64,
-    },
-    {
-      chartType: "fatigue",
-      imageBase64: testImageBase64,
-    },
-    {
-      chartType: "heart-rate",
-      imageBase64: testImageBase64,
-    },
-    {
-      chartType: "psychological-fatigue",
-      imageBase64: testImageBase64,
-    },
-    {
-      chartType: "gravity",
-      imageBase64: testImageBase64,
-    },
-    {
-      chartType: "concentration",
-      imageBase64: testImageBase64,
-    },
-    {
-      chartType: "relaxation",
-      imageBase64: testImageBase64,
-    },
-    {
-      chartType: "nfb",
-      imageBase64: testImageBase64,
-    },
-  ],
+const mockChartUrls = {
+  "heart-rate":
+    "https://python-heart-rate-analysis-toolkit.readthedocs.io/en/latest/_images/output2.jpeg",
+  fatigue:
+    "https://studfile.net/html/2706/963/html_IJIQzckqnY.HSqN/htmlconvd-uCm78s_html_f3cfa24fd0ce1e35.png",
+  "alpha-beta-theta":
+    "https://storage.yandexcloud.net/wr4img/1116686275_i_001b.png",
+  "psychological-fatigue":
+    "https://avatars.mds.yandex.net/i?id=048c5c36cba0f253e76f2bb74bd7da52_l-5236157-images-thumbs&n=13",
+  gravity:
+    "https://storage.googleapis.com/files.bitscreener.com/static/img/thumbnail/coins/gravity-token.png",
+  concentration:
+    "https://avatars.dzeninfra.ru/get-zen_doc/1362956/pub_5adc6d46bce67e90d2a46acf_5adc6db100b3ddc88a039985/scale_1200",
+  relaxation:
+    "https://img.freepik.com/premium-vector/serene-woman-relaxing-mat-vector-illustration_1316704-34671.jpg?semt=ais_hybrid",
+  nfb: "https://психолог-иваново.рф/img/u/68da3f08658e1.png",
 };
 
 export default {
@@ -65,7 +41,9 @@ export default {
   },
   decorators: [
     (Story) => {
-      chartsApi.getMyCharts = async () => mockChartData;
+      chartsApi.getChartImage = async (id, chartType, indNum) => {
+        return mockChartUrls[chartType];
+      };
       expeditionApi.getMyExpeditions = async () => ({
         asLeader: [mockExpedition],
         asParticipant: [],
@@ -73,6 +51,23 @@ export default {
       expeditionApi.getExpeditionDetails = async () => mockExpedition;
       analyticsApi.getAdvice = async () => ({
         response: "Соблюдайте режим питания и сна",
+      });
+
+      const originalLocalStorage = global.localStorage;
+
+      const mockStorage = {
+        ...originalLocalStorage,
+        getItem: (key) => {
+          if (key === "userEmail") return "ivan@arctic.ru";
+          if (key === "individualNumber") return "ARCTIC-001";
+          return originalLocalStorage.getItem(key);
+        },
+      };
+
+      Object.defineProperty(global, "localStorage", {
+        value: mockStorage,
+        writable: true,
+        configurable: true,
       });
 
       return (

@@ -8,8 +8,8 @@ function ParticipantMetricsPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
-  const [charts, setCharts] = useState(null);
   const [advice, setAdvice] = useState(null);
+  const [chartUrls, setChartUrls] = useState({});
   const [participant, setParticipant] = useState(null);
   const [expedition, setExpedition] = useState(null);
 
@@ -38,9 +38,6 @@ function ParticipantMetricsPage() {
 
       const participantsData =
         await expeditionApi.getExpeditionParticipants(expeditionId);
-
-      console.log("Participants data from API:", participantsData);
-
       const foundParticipant = participantsData.find(
         (p) => p.participantId.toString() === participantId,
       );
@@ -51,18 +48,47 @@ function ParticipantMetricsPage() {
 
       setParticipant(foundParticipant);
 
-      const chartsData = await chartsApi.getParticipantCharts(
-        expeditionId,
-        foundParticipant.user.individualNumber,
-      );
+      const indNum = foundParticipant.user.individualNumber;
 
-      setCharts(chartsData);
+      if (indNum) {
+        const [
+          heartRateUrl,
+          fatigueUrl,
+          alphabetathetaUrl,
+          psychologicalfatigueUrl,
+          gravityUrl,
+          concentrationUrl,
+          relaxationUrl,
+          nfbUrl,
+        ] = await Promise.all([
+          chartsApi.getChartImage(expeditionId, "heart-rate", indNum),
+          chartsApi.getChartImage(expeditionId, "fatigue", indNum),
+          chartsApi.getChartImage(expeditionId, "alpha-beta-theta", indNum),
+          chartsApi.getChartImage(
+            expeditionId,
+            "psychological-fatigue",
+            indNum,
+          ),
+          chartsApi.getChartImage(expeditionId, "gravity", indNum),
+          chartsApi.getChartImage(expeditionId, "concentration", indNum),
+          chartsApi.getChartImage(expeditionId, "relaxation", indNum),
+          chartsApi.getChartImage(expeditionId, "nfb", indNum),
+        ]);
 
-      const adviceData = await analyticsApi.getAdvice(
-        expeditionId,
-        foundParticipant.user.individualNumber,
-      );
-      setAdvice(adviceData);
+        setChartUrls({
+          "heart-rate": heartRateUrl,
+          fatigue: fatigueUrl,
+          "alpha-beta-theta": alphabetathetaUrl,
+          "psychological-fatigue": psychologicalfatigueUrl,
+          gravity: gravityUrl,
+          concentration: concentrationUrl,
+          relaxation: relaxationUrl,
+          nfb: nfbUrl,
+        });
+
+        const adviceData = await analyticsApi.getAdvice(expeditionId, indNum);
+        setAdvice(adviceData);
+      }
 
       setLoading(false);
     } catch (error) {
@@ -165,11 +191,13 @@ function ParticipantMetricsPage() {
       </div>
 
       <div className="participant-metrics__charts">
-        {charts?.charts?.map((chart) => {
+        {Object.entries(chartUrls).map(([key, url]) => {
+          if (!url) return null;
+
           let title = "";
           let icon = "";
 
-          switch (chart.chartType) {
+          switch (key) {
             case "heart-rate":
               title = "Частота сердечных сокращений";
               icon = "❤️";
@@ -203,15 +231,12 @@ function ParticipantMetricsPage() {
               icon = "🤖";
               break;
             default:
-              title = chart.chartType;
+              title = key;
               icon = "📊";
           }
 
           return (
-            <div
-              key={chart.chartType}
-              className="participant-metrics__charts-half"
-            >
+            <div key={key} className="participant-metrics__charts-half">
               <div className="participant-metrics__charts-card">
                 <div className="participant-metrics__charts-card-header">
                   <h5 className="participant-metrics__charts-card-title">
@@ -220,7 +245,7 @@ function ParticipantMetricsPage() {
                 </div>
                 <div className="participant-metrics__charts-card-body">
                   <img
-                    src={chart.imageBase64}
+                    src={url}
                     alt={`График ${title}`}
                     style={{ width: "100%", height: "auto" }}
                   />

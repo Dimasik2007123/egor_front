@@ -2944,6 +2944,33 @@ body {
   display: inline-block;
 }
 
+.metrics__charts-card,
+.participant-metrics__charts-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.metrics__charts-card-header,
+.participant-metrics__charts-card-header {
+  flex-shrink: 0;
+}
+
+.metrics__charts-card-body,
+.participant-metrics__charts-card-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.metrics__charts-card-body img,
+.participant-metrics__charts-card-body img {
+  max-height: 300px;
+  object-fit: contain;
+}
+
 @media (width <= 900px) {
   .admin__stats {
     flex-direction: column;

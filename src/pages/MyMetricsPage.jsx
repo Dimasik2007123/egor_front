@@ -9,9 +9,21 @@ function MyMetricsPage() {
 
   const [loading, setLoading] = useState(true);
   const [charts, setCharts] = useState(null);
+  const [chartUrls, setChartUrls] = useState({});
   const [advice, setAdvice] = useState(null);
   const [expeditionData, setExpeditionData] = useState(null);
   const [expedition, setExpedition] = useState(null);
+
+  const chartTypes = [
+    { key: "heart-rate", label: "❤️ ЧСС", icon: true },
+    { key: "fatigue", label: "😴 Усталость", icon: false },
+    { key: "alpha-beta-theta", label: "🧠 Альфа-Бета-Тета", icon: false },
+    { key: "psychological-fatigue", label: "🧠 Псих. усталость", icon: false },
+    { key: "gravity", label: "📊 Гравитация", icon: false },
+    { key: "concentration", label: "🎯 Концентрация", icon: false },
+    { key: "relaxation", label: "🧘 Расслабление", icon: false },
+    { key: "nfb", label: "🤖 NFB", icon: false },
+  ];
 
   useEffect(() => {
     loadData();
@@ -39,15 +51,48 @@ function MyMetricsPage() {
       const expData = await expeditionApi.getExpeditionDetails(expeditionId);
       setExpeditionData(expData);
 
-      const chartsData = await chartsApi.getMyCharts(expeditionId);
+      const indNum = localStorage.getItem("individualNumber");
 
-      setCharts(chartsData);
-      const individualNumber = localStorage.getItem("individualNumber");
-      const adviceData = await analyticsApi.getAdvice(
-        expeditionId,
-        individualNumber,
-      );
-      setAdvice(adviceData);
+      if (indNum) {
+        const [
+          heartRateUrl,
+          fatigueUrl,
+          alphabetathetaUrl,
+          psychologicalfatigueUrl,
+          gravityUrl,
+          concentrationUrl,
+          relaxationUrl,
+          nfbUrl,
+        ] = await Promise.all([
+          chartsApi.getChartImage(expeditionId, "heart-rate", indNum),
+          chartsApi.getChartImage(expeditionId, "fatigue", indNum),
+          chartsApi.getChartImage(expeditionId, "alpha-beta-theta", indNum),
+          chartsApi.getChartImage(
+            expeditionId,
+            "psychological-fatigue",
+            indNum,
+          ),
+          chartsApi.getChartImage(expeditionId, "gravity", indNum),
+          chartsApi.getChartImage(expeditionId, "concentration", indNum),
+          chartsApi.getChartImage(expeditionId, "relaxation", indNum),
+          chartsApi.getChartImage(expeditionId, "nfb", indNum),
+        ]);
+
+        setChartUrls({
+          "heart-rate": heartRateUrl,
+          fatigue: fatigueUrl,
+          "alpha-beta-theta": alphabetathetaUrl,
+          "psychological-fatigue": psychologicalfatigueUrl,
+          gravity: gravityUrl,
+          concentration: concentrationUrl,
+          relaxation: relaxationUrl,
+          nfb: nfbUrl,
+        });
+
+        const adviceData = await analyticsApi.getAdvice(expeditionId, indNum);
+        setAdvice(adviceData);
+      }
+
       setLoading(false);
     } catch (error) {
       console.error("Failed to load metrics:", error);
@@ -85,11 +130,13 @@ function MyMetricsPage() {
       </div>
 
       <div className="metrics__charts">
-        {charts?.charts?.map((chart) => {
+        {Object.entries(chartUrls).map(([key, url]) => {
+          if (!url) return null;
+
           let title = "";
           let icon = "";
 
-          switch (chart.chartType) {
+          switch (key) {
             case "heart-rate":
               title = "Частота сердечных сокращений";
               icon = "❤️";
@@ -123,12 +170,12 @@ function MyMetricsPage() {
               icon = "🤖";
               break;
             default:
-              title = chart.chartType;
+              title = key;
               icon = "📊";
           }
 
           return (
-            <div key={chart.chartType} className="metrics__charts-half">
+            <div key={key} className="metrics__charts-half">
               <div className="metrics__charts-card">
                 <div className="metrics__charts-card-header">
                   <h5 className="metrics__charts-card-title">
@@ -137,7 +184,7 @@ function MyMetricsPage() {
                 </div>
                 <div className="metrics__charts-card-body">
                   <img
-                    src={chart.imageBase64}
+                    src={url}
                     alt={`График ${title}`}
                     style={{ width: "100%", height: "auto" }}
                   />
@@ -148,7 +195,7 @@ function MyMetricsPage() {
         })}
       </div>
 
-      {charts && (
+      {expeditionData && (
         <div className="metrics__info">
           <div className="metrics__info-row">
             <div className="metrics__info-column">
