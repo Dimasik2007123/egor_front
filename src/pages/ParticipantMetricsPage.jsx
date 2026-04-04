@@ -20,6 +20,20 @@ function ParticipantMetricsPage() {
   const [dashboardData, setDashboardData] = useState(null);
   const [participant, setParticipant] = useState(null);
   const [expedition, setExpedition] = useState(null);
+  const [loadingAdvice, setLoadingAdvice] = useState(false);
+
+  const loadAdvice = async () => {
+    setLoadingAdvice(true);
+    try {
+      const indNum = participant?.user?.individualNumber;
+      const data = await analyticsApi.getAdvice(expeditionId, indNum);
+      setAdvice(data);
+    } catch (error) {
+      console.error("Failed to load advice:", error);
+    } finally {
+      setLoadingAdvice(false);
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -60,9 +74,6 @@ function ParticipantMetricsPage() {
       if (indNum) {
         const dashboard = await dashboardApi.getDashboardData(indNum, expeditionId);
         setDashboardData(dashboard);
-
-        const adviceData = await analyticsApi.getAdvice(expeditionId, indNum);
-        setAdvice(adviceData);
       }
 
       setLoading(false);
@@ -247,7 +258,7 @@ function ParticipantMetricsPage() {
           </div>
         )}
 
-        {nfbData && (
+        {nfbData && nfbData.values && nfbData.values.some(v => v !== null && v !== 0) && (
           <div className="participant-metrics__chart-section">
             <div className="participant-metrics__chart-header">
               <h3>🤖 NFB</h3>
@@ -268,20 +279,30 @@ function ParticipantMetricsPage() {
         )}
       </div>
 
-      {advice && (
-        <div className="participant-metrics__recommendations">
-          <div className="participant-metrics__recommendations-header">
-            <h5 className="participant-metrics__recommendations-title">
-              💡 Совет от нейросети
-            </h5>
-          </div>
-          <div className="participant-metrics__recommendations-body">
-            <div className="participant-metrics__alert--info">
-              {advice.response}
+      <div className="participant-metrics__advice-section">
+        <button 
+          onClick={loadAdvice} 
+          disabled={loadingAdvice}
+          className="participant-metrics__advice-button"
+        >
+          {loadingAdvice ? "⏳ Нейросеть думает..." : "🧠 Получить анализ от нейросети"}
+        </button>
+        
+        {advice && (
+          <div className="participant-metrics__recommendations">
+            <div className="participant-metrics__recommendations-header">
+              <h5 className="participant-metrics__recommendations-title">
+                💡 Совет от нейросети
+              </h5>
+            </div>
+            <div className="participant-metrics__recommendations-body">
+              <div className="participant-metrics__alert--info">
+                {advice.response}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

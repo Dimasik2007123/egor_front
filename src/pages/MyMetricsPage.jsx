@@ -20,6 +20,20 @@ function MyMetricsPage() {
   const [advice, setAdvice] = useState(null);
   const [expeditionData, setExpeditionData] = useState(null);
   const [expedition, setExpedition] = useState(null);
+  const [loadingAdvice, setLoadingAdvice] = useState(false);
+
+  const loadAdvice = async () => {
+    setLoadingAdvice(true);
+    try {
+      const indNum = localStorage.getItem("individualNumber");
+      const data = await analyticsApi.getAdvice(expeditionId, indNum);
+      setAdvice(data);
+    } catch (error) {
+      console.error("Failed to load advice:", error);
+    } finally {
+      setLoadingAdvice(false);
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -52,9 +66,6 @@ function MyMetricsPage() {
       if (indNum) {
         const dashboard = await dashboardApi.getDashboardData(indNum, expeditionId);
         setDashboardData(dashboard);
-
-        const adviceData = await analyticsApi.getAdvice(expeditionId, indNum);
-        setAdvice(adviceData);
       }
 
       setLoading(false);
@@ -107,6 +118,45 @@ function MyMetricsPage() {
           {expedition && (
             <p className="metrics__subtitle">Экспедиция: {expedition.name}</p>
           )}
+        </div>
+      </div>
+
+      <div className="metrics__participant-card">
+        <div className="metrics__participant-header">
+          <div className="metrics__participant-icon">👤</div>
+          <h3>Информация об участнике</h3>
+        </div>
+        <div className="metrics__participant-body">
+          <div className="metrics__participant-grid">
+            <div className="metrics__participant-item">
+              <span className="metrics__participant-label">Email</span>
+              <span className="metrics__participant-value">
+                {localStorage.getItem("userEmail") || "Не указан"}
+              </span>
+            </div>
+            <div className="metrics__participant-item">
+              <span className="metrics__participant-label">Индивидуальный номер</span>
+              <code className="metrics__participant-code">
+                {localStorage.getItem("individualNumber") || "Не указан"}
+              </code>
+            </div>
+            {expeditionData && (
+              <>
+                <div className="metrics__participant-item">
+                  <span className="metrics__participant-label">📅 Период экспедиции</span>
+                  <span className="metrics__participant-value">
+                    {expeditionData.startDate} — {expeditionData.endDate}
+                  </span>
+                </div>
+                <div className="metrics__participant-item">
+                  <span className="metrics__participant-label">🏔️ Экспедиция</span>
+                  <span className="metrics__participant-value">
+                    {expedition?.name}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -180,7 +230,7 @@ function MyMetricsPage() {
         </div>
       )}
 
-      {nfbData && (
+      {nfbData && nfbData.values && nfbData.values.some(v => v !== null && v !== 0) && (
         <div className="metrics__chart-section">
           <div className="metrics__chart-header">
             <h3>🤖 NFB</h3>
@@ -200,41 +250,30 @@ function MyMetricsPage() {
         </div>
       )}
 
-      {expeditionData && (
-        <div className="metrics__info">
-          <div className="metrics__info-row">
-            <div className="metrics__info-column">
-              <h6 className="metrics__info-label">👤 Участник:</h6>
-              <p className="metrics__info-value">
-                {localStorage.getItem("userEmail")}
-              </p>
+      <div className="metrics__advice-section">
+        <button 
+          onClick={loadAdvice} 
+          disabled={loadingAdvice}
+          className="metrics__advice-button"
+        >
+          {loadingAdvice ? "⏳ Нейросеть думает..." : "🧠 Получить анализ от нейросети"}
+        </button>
+        
+        {advice && (
+          <div className="metrics__recommendations">
+            <div className="metrics__recommendations-header">
+              <h5>💡 Анализ и рекомендации</h5>
             </div>
-            <div className="metrics__info-column">
-              <h6 className="metrics__info-label">📅 Период:</h6>
-              <p className="metrics__info-value">
-                {expeditionData.startDate + " - " + expeditionData.endDate || "Не указано"}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {advice && (
-        <div className="participant-metrics__recommendations">
-          <div className="participant-metrics__recommendations-header">
-            <h5 className="participant-metrics__recommendations-title">
-              💡 Совет от нейросети
-            </h5>
-          </div>
-          <div className="participant-metrics__recommendations-body">
-            <div className="participant-metrics__alert--info">
-              {advice.response}
+            <div className="metrics__recommendations-body">
+              <div className="metrics__alert--info">
+                {advice.response}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
 
-export default MyMetricsPage; 
+export default MyMetricsPage;

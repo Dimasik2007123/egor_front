@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
-import { dashboardApi } from "../../api/ArcticApi";
+import { dashboardApi, analyticsApi } from "../../api/ArcticApi";
 import ConcentrationChart from "../../components/charts/ConcentrationChart";
 import HeartRateChart from "../../components/charts/HeartRateChart";
 import FatigueChart from "../../components/charts/FatigueChart";
@@ -20,6 +20,20 @@ function ExpeditionChartsPage() {
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
   const [activeChart, setActiveChart] = useState("concentration");
+  const [advice, setAdvice] = useState(null);
+  const [loadingAdvice, setLoadingAdvice] = useState(false);
+
+  const loadAdvice = async () => {
+    setLoadingAdvice(true);
+    try {
+      const data = await analyticsApi.getAdvice(id, indNum);
+      setAdvice(data);
+    } catch (error) {
+      console.error("Failed to load advice:", error);
+    } finally {
+      setLoadingAdvice(false);
+    }
+  };
 
   useEffect(() => {
     if (indNum) {
@@ -106,6 +120,29 @@ function ExpeditionChartsPage() {
             <ActiveChartComponent data={chartDataMap[activeChart]} />
           )}
         </div>
+      </div>
+
+      <div className="charts__advice-section">
+        <button 
+          onClick={loadAdvice} 
+          disabled={loadingAdvice}
+          className="charts__advice-button"
+        >
+          {loadingAdvice ? "⏳ Нейросеть думает..." : "🧠 Получить анализ от нейросети"}
+        </button>
+        
+        {advice && (
+          <div className="charts__recommendations">
+            <div className="charts__recommendations-header">
+              <h5>💡 Анализ и рекомендации</h5>
+            </div>
+            <div className="charts__recommendations-body">
+              <div className="charts__alert--info">
+                {advice.response}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
