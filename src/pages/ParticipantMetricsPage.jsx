@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-//import axios from 'axios';
-import { chartsApi, expeditionApi, analyticsApi } from "../api/ArcticApi";
+import { expeditionApi, analyticsApi, dashboardApi } from "../api/ArcticApi";
+import ConcentrationChart from "../components/charts/ConcentrationChart";
+import HeartRateChart from "../components/charts/HeartRateChart";
+import FatigueChart from "../components/charts/FatigueChart";
+import AlphaBetaThetaChart from "../components/charts/AlphaBetaThetaChart";
+import RelaxChart from "../components/charts/RelaxChart";
+import StressChart from "../components/charts/StressChart";
+import GravityChart from "../components/charts/GravityChart";
+import NFBChart from "../components/charts/NFBChart";
+import PsychologicalFatigueChart from "../components/charts/PsychologicalFatigueChart";
 
 function ParticipantMetricsPage() {
   const { expeditionId, participantId } = useParams();
@@ -9,7 +17,7 @@ function ParticipantMetricsPage() {
 
   const [loading, setLoading] = useState(true);
   const [advice, setAdvice] = useState(null);
-  const [chartUrls, setChartUrls] = useState({});
+  const [dashboardData, setDashboardData] = useState(null);
   const [participant, setParticipant] = useState(null);
   const [expedition, setExpedition] = useState(null);
 
@@ -36,8 +44,7 @@ function ParticipantMetricsPage() {
 
       setExpedition(foundExpedition);
 
-      const participantsData =
-        await expeditionApi.getExpeditionParticipants(expeditionId);
+      const participantsData = await expeditionApi.getExpeditionParticipants(expeditionId);
       const foundParticipant = participantsData.find(
         (p) => p.participantId.toString() === participantId,
       );
@@ -51,36 +58,8 @@ function ParticipantMetricsPage() {
       const indNum = foundParticipant.user.individualNumber;
 
       if (indNum) {
-        const results = await Promise.allSettled([
-          chartsApi.getChartImage(expeditionId, "heart-rate", indNum),
-          chartsApi.getChartImage(expeditionId, "fatigue", indNum),
-          chartsApi.getChartImage(expeditionId, "alpha-beta-theta", indNum),
-          chartsApi.getChartImage(
-            expeditionId,
-            "psychological-fatigue",
-            indNum,
-          ),
-          chartsApi.getChartImage(expeditionId, "gravity", indNum),
-          chartsApi.getChartImage(expeditionId, "concentration", indNum),
-          chartsApi.getChartImage(expeditionId, "relaxation", indNum),
-          chartsApi.getChartImage(expeditionId, "nfb", indNum),
-        ]);
-
-        setChartUrls({
-          "heart-rate":
-            results[0].status === "fulfilled" ? results[0].value : null,
-          fatigue: results[1].status === "fulfilled" ? results[1].value : null,
-          "alpha-beta-theta":
-            results[2].status === "fulfilled" ? results[2].value : null,
-          "psychological-fatigue":
-            results[3].status === "fulfilled" ? results[3].value : null,
-          gravity: results[4].status === "fulfilled" ? results[4].value : null,
-          concentration:
-            results[5].status === "fulfilled" ? results[5].value : null,
-          relaxation:
-            results[6].status === "fulfilled" ? results[6].value : null,
-          nfb: results[7].status === "fulfilled" ? results[7].value : null,
-        });
+        const dashboard = await dashboardApi.getDashboardData(indNum, expeditionId);
+        setDashboardData(dashboard);
 
         const adviceData = await analyticsApi.getAdvice(expeditionId, indNum);
         setAdvice(adviceData);
@@ -110,13 +89,13 @@ function ParticipantMetricsPage() {
     );
   }
 
-  if (!participant) {
+  if (!participant || !dashboardData) {
     return (
       <div className="participant-metrics__error">
         <div className="participant-metrics__error-content">
           <h4 className="participant-metrics__error-title">Ошибка</h4>
           <p className="participant-metrics__error-message">
-            Участник не найден
+            Участник не найден или нет данных
           </p>
           <button
             onClick={handleBack}
@@ -129,13 +108,27 @@ function ParticipantMetricsPage() {
     );
   }
 
+  const labels = dashboardData.map(row => `${row.date} ${row.timeOfDay}`);
+
+  const concentrationData = { labels, values: dashboardData.map(row => row.concentration) };
+  const heartRateData = { labels, values: dashboardData.map(row => row.heartRate) };
+  const fatigueData = { labels, values: dashboardData.map(row => row.fatigue) };
+  const alphaBetaThetaData = {
+    labels,
+    alpha: dashboardData.map(row => row.alpha),
+    beta: dashboardData.map(row => row.beta),
+    theta: dashboardData.map(row => row.theta)
+  };
+  const relaxData = { labels, values: dashboardData.map(row => row.relax) };
+  const stressData = { labels, values: dashboardData.map(row => row.stress) };
+  const gravityData = { labels, values: dashboardData.map(row => row.gravity) };
+  const nfbData = { labels, values: dashboardData.map(row => row.smr) };
+  const psychologicalFatigueData = { labels, values: dashboardData.map(row => row.fatigue) };
+
   return (
     <div className="participant-metrics">
       <div className="participant-metrics__header">
-        <button
-          onClick={handleBack}
-          className="participant-metrics__back-button"
-        >
+        <button onClick={handleBack} className="participant-metrics__back-button">
           ← Назад к экспедиции
         </button>
         <div className="participant-metrics__title-wrapper">
@@ -151,16 +144,13 @@ function ParticipantMetricsPage() {
 
       <div className="participant-metrics__info-card">
         <div className="participant-metrics__info-header">
-          <h5 className="participant-metrics__info-title">
-            👤 Информация об участнике
-          </h5>
+          <h5 className="participant-metrics__info-title">👤 Информация об участнике</h5>
         </div>
         <div className="participant-metrics__info-body">
           <div className="participant-metrics__info-row">
             <div className="participant-metrics__info-col">
               <p className="participant-metrics__info-text">
-                <strong>Имя:</strong> {participant.user.firstName}{" "}
-                {participant.user.lastName}
+                <strong>Имя:</strong> {participant.user.firstName} {participant.user.lastName}
               </p>
             </div>
             <div className="participant-metrics__info-col">
@@ -187,69 +177,95 @@ function ParticipantMetricsPage() {
       </div>
 
       <div className="participant-metrics__charts">
-        {Object.entries(chartUrls).map(([key, url]) => {
-          if (!url) return null;
-
-          let title = "";
-          let icon = "";
-
-          switch (key) {
-            case "heart-rate":
-              title = "Частота сердечных сокращений";
-              icon = "❤️";
-              break;
-            case "fatigue":
-              title = "Усталость";
-              icon = "😴";
-              break;
-            case "psychological-fatigue":
-              title = "Психологическая усталость";
-              icon = "🧠";
-              break;
-            case "concentration":
-              title = "Концентрация";
-              icon = "🎯";
-              break;
-            case "alpha-beta-theta":
-              title = "Альфа-Бета-Тета волны";
-              icon = "🌊";
-              break;
-            case "gravity":
-              title = "Гравитация";
-              icon = "⚖️";
-              break;
-            case "relaxation":
-              title = "Расслабление";
-              icon = "🧘";
-              break;
-            case "nfb":
-              title = "NFB анализ";
-              icon = "🤖";
-              break;
-            default:
-              title = key;
-              icon = "📊";
-          }
-
-          return (
-            <div key={key} className="participant-metrics__charts-half">
-              <div className="participant-metrics__charts-card">
-                <div className="participant-metrics__charts-card-header">
-                  <h5 className="participant-metrics__charts-card-title">
-                    {icon} {title}
-                  </h5>
-                </div>
-                <div className="participant-metrics__charts-card-body">
-                  <img
-                    src={url}
-                    alt={`График ${title}`}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                </div>
-              </div>
+        {concentrationData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>🎯 Концентрация</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика концентрации по времени</p>
             </div>
-          );
-        })}
+            <ConcentrationChart data={concentrationData} />
+          </div>
+        )}
+
+        {heartRateData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>❤️ Частота сердечных сокращений</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика ЧСС по времени</p>
+            </div>
+            <HeartRateChart data={heartRateData} />
+          </div>
+        )}
+
+        {fatigueData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>😴 Усталость</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика усталости по времени</p>
+            </div>
+            <FatigueChart data={fatigueData} />
+          </div>
+        )}
+
+        {alphaBetaThetaData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>🧠 Альфа-Бета-Тета волны</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика мозговой активности</p>
+            </div>
+            <AlphaBetaThetaChart data={alphaBetaThetaData} />
+          </div>
+        )}
+
+        {relaxData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>🧘 Расслабление</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика расслабления по времени</p>
+            </div>
+            <RelaxChart data={relaxData} />
+          </div>
+        )}
+
+        {stressData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>⚠️ Стресс</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика уровня стресса</p>
+            </div>
+            <StressChart data={stressData} />
+          </div>
+        )}
+
+        {gravityData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>⚖️ Gravity</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика гравитационного фактора</p>
+            </div>
+            <GravityChart data={gravityData} />
+          </div>
+        )}
+
+        {nfbData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>🤖 NFB</h3>
+              <p className="participant-metrics__chart-subtitle">Сенсомоторный ритм (SMR)</p>
+            </div>
+            <NFBChart data={nfbData} />
+          </div>
+        )}
+
+        {psychologicalFatigueData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>🧠 Психологическая усталость</h3>
+              <p className="participant-metrics__chart-subtitle">Динамика психологической усталости</p>
+            </div>
+            <PsychologicalFatigueChart data={psychologicalFatigueData} />
+          </div>
+        )}
       </div>
 
       {advice && (

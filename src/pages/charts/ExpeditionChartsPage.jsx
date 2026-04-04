@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
-//import axios from 'axios';
-import { chartsApi } from "../../api/ArcticApi";
+import { dashboardApi } from "../../api/ArcticApi";
+import ConcentrationChart from "../../components/charts/ConcentrationChart";
+import HeartRateChart from "../../components/charts/HeartRateChart";
+import FatigueChart from "../../components/charts/FatigueChart";
+import AlphaBetaThetaChart from "../../components/charts/AlphaBetaThetaChart";
+import RelaxChart from "../../components/charts/RelaxChart";
+import StressChart from "../../components/charts/StressChart";
+import GravityChart from "../../components/charts/GravityChart";
+import NFBChart from "../../components/charts/NFBChart";
+import PsychologicalFatigueChart from "../../components/charts/PsychologicalFatigueChart";
 
 function ExpeditionChartsPage() {
   const { id } = useParams();
@@ -9,87 +17,65 @@ function ExpeditionChartsPage() {
   const navigate = useNavigate();
   const indNum = searchParams.get("indNum");
 
-  const [chartUrls, setChartUrls] = useState({});
   const [loading, setLoading] = useState(true);
-  const [activeChart, setActiveChart] = useState("heart-rate");
+  const [dashboardData, setDashboardData] = useState(null);
+  const [activeChart, setActiveChart] = useState("concentration");
 
   useEffect(() => {
     if (indNum) {
-      const loadCharts = async () => {
+      const loadData = async () => {
         try {
-          const heartRateUrl = await chartsApi.getChartImage(
-            id,
-            "heart-rate",
-            indNum,
-          );
-          const fatigueUrl = await chartsApi.getChartImage(
-            id,
-            "fatigue",
-            indNum,
-          );
-          const alphabetathetaUrl = await chartsApi.getChartImage(
-            id,
-            "alpha-beta-theta",
-            indNum,
-          );
-          const psychologicalfatigueUrl = await chartsApi.getChartImage(
-            id,
-            "psychological-fatigue",
-            indNum,
-          );
-          const gravityUrl = await chartsApi.getChartImage(
-            id,
-            "gravity",
-            indNum,
-          );
-          const concentrationUrl = await chartsApi.getChartImage(
-            id,
-            "concentration",
-            indNum,
-          );
-          const relaxationUrl = await chartsApi.getChartImage(
-            id,
-            "relaxation",
-            indNum,
-          );
-          const nfbUrl = await chartsApi.getChartImage(id, "nfb", indNum);
-          setChartUrls({
-            "heart-rate": heartRateUrl,
-            fatigue: fatigueUrl,
-            "alpha-beta-theta": alphabetathetaUrl,
-            "psychological-fatigue": psychologicalfatigueUrl,
-            gravity: gravityUrl,
-            concentration: concentrationUrl,
-            relaxation: relaxationUrl,
-            nfb: nfbUrl,
-          });
+          const data = await dashboardApi.getDashboardData(indNum, id);
+          setDashboardData(data);
           setLoading(false);
         } catch {
           setLoading(false);
         }
       };
-      loadCharts();
+      loadData();
     }
-
-    //loadCharts();
   }, [id, indNum]);
 
   const chartTypes = [
-    { key: "heart-rate", label: "❤️ ЧСС", icon: true },
-    { key: "fatigue", label: "😴 Усталость", icon: false },
-    { key: "alpha-beta-theta", label: "🧠 Альфа-Бета-Тета", icon: false },
-    { key: "psychological-fatigue", label: "🧠 Псих. усталость", icon: false },
-    { key: "gravity", label: "📊 Гравитация", icon: false },
-    { key: "concentration", label: "🎯 Концентрация", icon: false },
-    { key: "relaxation", label: "🧘 Расслабление", icon: false },
-    { key: "nfb", label: "🤖 NFB", icon: false },
+    { key: "concentration", label: "🎯 Концентрация", component: ConcentrationChart },
+    { key: "heartRate", label: "❤️ ЧСС", component: HeartRateChart },
+    { key: "fatigue", label: "😴 Усталость", component: FatigueChart },
+    { key: "alphaBetaTheta", label: "🧠 Альфа-Бета-Тета", component: AlphaBetaThetaChart },
+    { key: "relax", label: "🧘 Расслабление", component: RelaxChart },
+    { key: "stress", label: "⚠️ Стресс", component: StressChart },
+    { key: "gravity", label: "⚖️ Гравитация", component: GravityChart },
+    { key: "nfb", label: "🤖 NFB", component: NFBChart },
+    { key: "psychologicalFatigue", label: "🧠 Псих. усталость", component: PsychologicalFatigueChart },
   ];
 
-  if (loading)
+  if (loading) {
     return <div className="charts__loading-message">Загрузка графиков...</div>;
+  }
 
-  if (Object.values(chartUrls).every((url) => !url))
+  if (!dashboardData) {
     return <div className="charts__empty-message">Нет данных</div>;
+  }
+
+  const labels = dashboardData.map(row => `${row.date} ${row.timeOfDay}`);
+  
+  const chartDataMap = {
+    concentration: { labels, values: dashboardData.map(row => row.concentration) },
+    heartRate: { labels, values: dashboardData.map(row => row.heartRate) },
+    fatigue: { labels, values: dashboardData.map(row => row.fatigue) },
+    alphaBetaTheta: {
+      labels,
+      alpha: dashboardData.map(row => row.alpha),
+      beta: dashboardData.map(row => row.beta),
+      theta: dashboardData.map(row => row.theta)
+    },
+    relax: { labels, values: dashboardData.map(row => row.relax) },
+    stress: { labels, values: dashboardData.map(row => row.stress) },
+    gravity: { labels, values: dashboardData.map(row => row.gravity) },
+    nfb: { labels, values: dashboardData.map(row => row.smr) },
+    psychologicalFatigue: { labels, values: dashboardData.map(row => row.fatigue) },
+  };
+
+  const ActiveChartComponent = chartTypes.find(c => c.key === activeChart)?.component;
 
   return (
     <div className="charts">
@@ -107,34 +93,17 @@ function ExpeditionChartsPage() {
               <li key={chart.key} className="charts__nav-item">
                 <button
                   className={`charts__nav-link ${activeChart === chart.key ? "charts__nav-link--active" : ""}`}
-                  onClick={() => {
-                    if (chartUrls[chart.key]) {
-                      setActiveChart(chart.key);
-                    }
-                  }}
-                  disabled={!chartUrls[chart.key]}
-                  title={!chartUrls[chart.key] ? "График не доступен" : ""}
+                  onClick={() => setActiveChart(chart.key)}
                 >
-                  {chart.icon ? (
-                    <span className="heart-icon">{chart.label}</span>
-                  ) : (
-                    chart.label
-                  )}
+                  {chart.label}
                 </button>
               </li>
             ))}
           </ul>
-          {!chartUrls[activeChart] && (
-            <div className="charts__empty-message">График не доступен</div>
-          )}
         </div>
         <div className="charts__card-body">
-          {chartUrls[activeChart] && (
-            <img
-              src={chartUrls[activeChart]}
-              alt={`График ${activeChart}`}
-              className="charts__card-img"
-            />
+          {ActiveChartComponent && (
+            <ActiveChartComponent data={chartDataMap[activeChart]} />
           )}
         </div>
       </div>

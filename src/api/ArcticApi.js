@@ -124,6 +124,11 @@ export const chartsApi = {
   },
 };
 
+export const dashboardApi = {
+  getDashboardData: (indNum, expeditionId) =>
+    api.get(`/dashboard/${indNum}/${expeditionId}`).then(handleResponse),
+};
+
 export const analyticsApi = {
   getAdvice: (expeditionId, indNum) =>
     api

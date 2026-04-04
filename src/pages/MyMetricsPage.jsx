@@ -1,29 +1,25 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-//import axios from 'axios';
-import { chartsApi, expeditionApi, analyticsApi } from "../api/ArcticApi";
+import { expeditionApi, analyticsApi, dashboardApi } from "../api/ArcticApi";
+import ConcentrationChart from "../components/charts/ConcentrationChart";
+import HeartRateChart from "../components/charts/HeartRateChart";
+import FatigueChart from "../components/charts/FatigueChart";
+import AlphaBetaThetaChart from "../components/charts/AlphaBetaThetaChart";
+import RelaxChart from "../components/charts/RelaxChart";
+import StressChart from "../components/charts/StressChart";
+import GravityChart from "../components/charts/GravityChart";
+import NFBChart from "../components/charts/NFBChart";
+import PsychologicalFatigueChart from "../components/charts/PsychologicalFatigueChart";
 
 function MyMetricsPage() {
   const { expeditionId } = useParams();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
-  const [charts, setCharts] = useState(null);
-  const [chartUrls, setChartUrls] = useState({});
+  const [dashboardData, setDashboardData] = useState(null);
   const [advice, setAdvice] = useState(null);
   const [expeditionData, setExpeditionData] = useState(null);
   const [expedition, setExpedition] = useState(null);
-
-  const chartTypes = [
-    { key: "heart-rate", label: "❤️ ЧСС", icon: true },
-    { key: "fatigue", label: "😴 Усталость", icon: false },
-    { key: "alpha-beta-theta", label: "🧠 Альфа-Бета-Тета", icon: false },
-    { key: "psychological-fatigue", label: "🧠 Псих. усталость", icon: false },
-    { key: "gravity", label: "📊 Гравитация", icon: false },
-    { key: "concentration", label: "🎯 Концентрация", icon: false },
-    { key: "relaxation", label: "🧘 Расслабление", icon: false },
-    { key: "nfb", label: "🤖 NFB", icon: false },
-  ];
 
   useEffect(() => {
     loadData();
@@ -54,36 +50,8 @@ function MyMetricsPage() {
       const indNum = localStorage.getItem("individualNumber");
 
       if (indNum) {
-        const results = await Promise.allSettled([
-          chartsApi.getChartImage(expeditionId, "heart-rate", indNum),
-          chartsApi.getChartImage(expeditionId, "fatigue", indNum),
-          chartsApi.getChartImage(expeditionId, "alpha-beta-theta", indNum),
-          chartsApi.getChartImage(
-            expeditionId,
-            "psychological-fatigue",
-            indNum,
-          ),
-          chartsApi.getChartImage(expeditionId, "gravity", indNum),
-          chartsApi.getChartImage(expeditionId, "concentration", indNum),
-          chartsApi.getChartImage(expeditionId, "relaxation", indNum),
-          chartsApi.getChartImage(expeditionId, "nfb", indNum),
-        ]);
-
-        setChartUrls({
-          "heart-rate":
-            results[0].status === "fulfilled" ? results[0].value : null,
-          fatigue: results[1].status === "fulfilled" ? results[1].value : null,
-          "alpha-beta-theta":
-            results[2].status === "fulfilled" ? results[2].value : null,
-          "psychological-fatigue":
-            results[3].status === "fulfilled" ? results[3].value : null,
-          gravity: results[4].status === "fulfilled" ? results[4].value : null,
-          concentration:
-            results[5].status === "fulfilled" ? results[5].value : null,
-          relaxation:
-            results[6].status === "fulfilled" ? results[6].value : null,
-          nfb: results[7].status === "fulfilled" ? results[7].value : null,
-        });
+        const dashboard = await dashboardApi.getDashboardData(indNum, expeditionId);
+        setDashboardData(dashboard);
 
         const adviceData = await analyticsApi.getAdvice(expeditionId, indNum);
         setAdvice(adviceData);
@@ -100,7 +68,7 @@ function MyMetricsPage() {
     navigate(`/expeditions/${expeditionId}`);
   };
 
-  if (loading) {
+  if (loading || !dashboardData) {
     return (
       <div className="metrics__spinner">
         <div className="metrics__spinner-status" role="status">
@@ -110,6 +78,23 @@ function MyMetricsPage() {
       </div>
     );
   }
+
+  const labels = dashboardData.map(row => `${row.date} ${row.timeOfDay}`);
+
+  const concentrationData = { labels, values: dashboardData.map(row => row.concentration) };
+  const heartRateData = { labels, values: dashboardData.map(row => row.heartRate) };
+  const fatigueData = { labels, values: dashboardData.map(row => row.fatigue) };
+  const alphaBetaThetaData = {
+    labels,
+    alpha: dashboardData.map(row => row.alpha),
+    beta: dashboardData.map(row => row.beta),
+    theta: dashboardData.map(row => row.theta)
+  };
+  const relaxData = { labels, values: dashboardData.map(row => row.relax) };
+  const stressData = { labels, values: dashboardData.map(row => row.stress) };
+  const gravityData = { labels, values: dashboardData.map(row => row.gravity) };
+  const nfbData = { labels, values: dashboardData.map(row => row.smr) };
+  const psychologicalFatigueData = { labels, values: dashboardData.map(row => row.fatigue) };
 
   return (
     <div className="metrics">
@@ -125,71 +110,95 @@ function MyMetricsPage() {
         </div>
       </div>
 
-      <div className="metrics__charts">
-        {Object.entries(chartUrls).map(([key, url]) => {
-          if (!url) return null;
+      {concentrationData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>🎯 Концентрация</h3>
+            <p className="metrics__chart-subtitle">Динамика концентрации по времени</p>
+          </div>
+          <ConcentrationChart data={concentrationData} />
+        </div>
+      )}
 
-          let title = "";
-          let icon = "";
+      {heartRateData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>❤️ Частота сердечных сокращений</h3>
+            <p className="metrics__chart-subtitle">Динамика ЧСС по времени</p>
+          </div>
+          <HeartRateChart data={heartRateData} />
+        </div>
+      )}
 
-          switch (key) {
-            case "heart-rate":
-              title = "Частота сердечных сокращений";
-              icon = "❤️";
-              break;
-            case "fatigue":
-              title = "Усталость";
-              icon = "😴";
-              break;
-            case "psychological-fatigue":
-              title = "Психологическая усталость";
-              icon = "🧠";
-              break;
-            case "concentration":
-              title = "Концентрация";
-              icon = "🎯";
-              break;
-            case "alpha-beta-theta":
-              title = "Альфа-Бета-Тета волны";
-              icon = "🌊";
-              break;
-            case "gravity":
-              title = "Гравитация";
-              icon = "⚖️";
-              break;
-            case "relaxation":
-              title = "Расслабление";
-              icon = "🧘";
-              break;
-            case "nfb":
-              title = "NFB анализ";
-              icon = "🤖";
-              break;
-            default:
-              title = key;
-              icon = "📊";
-          }
+      {fatigueData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>😴 Усталость</h3>
+            <p className="metrics__chart-subtitle">Динамика усталости по времени</p>
+          </div>
+          <FatigueChart data={fatigueData} />
+        </div>
+      )}
 
-          return (
-            <div key={key} className="metrics__charts-half">
-              <div className="metrics__charts-card">
-                <div className="metrics__charts-card-header">
-                  <h5 className="metrics__charts-card-title">
-                    {icon} {title}
-                  </h5>
-                </div>
-                <div className="metrics__charts-card-body">
-                  <img
-                    src={url}
-                    alt={`График ${title}`}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {alphaBetaThetaData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>🧠 Альфа-Бета-Тета волны</h3>
+            <p className="metrics__chart-subtitle">Динамика мозговой активности</p>
+          </div>
+          <AlphaBetaThetaChart data={alphaBetaThetaData} />
+        </div>
+      )}
+
+      {relaxData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>🧘 Расслабление</h3>
+            <p className="metrics__chart-subtitle">Динамика расслабления по времени</p>
+          </div>
+          <RelaxChart data={relaxData} />
+        </div>
+      )}
+
+      {stressData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>⚠️ Стресс</h3>
+            <p className="metrics__chart-subtitle">Динамика уровня стресса</p>
+          </div>
+          <StressChart data={stressData} />
+        </div>
+      )}
+
+      {gravityData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>⚖️ Gravity</h3>
+            <p className="metrics__chart-subtitle">Динамика гравитационного фактора</p>
+          </div>
+          <GravityChart data={gravityData} />
+        </div>
+      )}
+
+      {nfbData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>🤖 NFB</h3>
+            <p className="metrics__chart-subtitle">Сенсомоторный ритм (SMR)</p>
+          </div>
+          <NFBChart data={nfbData} />
+        </div>
+      )}
+
+      {psychologicalFatigueData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>🧠 Психологическая усталость</h3>
+            <p className="metrics__chart-subtitle">Динамика психологической усталости</p>
+          </div>
+          <PsychologicalFatigueChart data={psychologicalFatigueData} />
+        </div>
+      )}
 
       {expeditionData && (
         <div className="metrics__info">
@@ -197,14 +206,13 @@ function MyMetricsPage() {
             <div className="metrics__info-column">
               <h6 className="metrics__info-label">👤 Участник:</h6>
               <p className="metrics__info-value">
-                {localStorage.getItem("userEmail") /*GGGGGGG*/}
+                {localStorage.getItem("userEmail")}
               </p>
             </div>
             <div className="metrics__info-column">
               <h6 className="metrics__info-label">📅 Период:</h6>
               <p className="metrics__info-value">
-                {expeditionData.startDate + " - " + expeditionData.endDate ||
-                  "Не указано"}
+                {expeditionData.startDate + " - " + expeditionData.endDate || "Не указано"}
               </p>
             </div>
           </div>
@@ -229,4 +237,4 @@ function MyMetricsPage() {
   );
 }
 
-export default MyMetricsPage;
+export default MyMetricsPage; 
