@@ -9,10 +9,14 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
+  ArcElement,
+  RadialLinearScale,
+  BubbleController,
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 } from 'chart.js';
 
 ChartJS.register(
@@ -20,6 +24,10 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
+  ArcElement,
+  RadialLinearScale,
+  BubbleController,
   Title,
   Tooltip,
   Legend,

@@ -10,60 +10,60 @@ const AlphaBetaThetaChart = ({ data }) => {
         labels: data.labels,
         datasets: [
             {
-                label: 'Alpha',
+                label: 'Alpha (расслабление)',
                 data: data.alpha,
                 borderColor: 'rgb(34, 197, 94)',
                 backgroundColor: 'rgba(34, 197, 94, 0.1)',
                 borderWidth: 2,
                 tension: 0.4,
-                fill: false,
+                fill: true,
+                pointRadius: 3,
+                pointHoverRadius: 6,
                 pointBackgroundColor: 'rgb(34, 197, 94)',
                 pointBorderColor: 'white',
                 pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 7,
             },
             {
-                label: 'Beta',
+                label: 'Beta (активность)',
                 data: data.beta,
                 borderColor: 'rgb(59, 130, 246)',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 borderWidth: 2,
                 tension: 0.4,
-                fill: false,
+                fill: true,
+                pointRadius: 3,
+                pointHoverRadius: 6,
                 pointBackgroundColor: 'rgb(59, 130, 246)',
                 pointBorderColor: 'white',
                 pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 7,
             },
             {
-                label: 'Theta',
+                label: 'Theta (дремота)',
                 data: data.theta,
                 borderColor: 'rgb(249, 115, 22)',
                 backgroundColor: 'rgba(249, 115, 22, 0.1)',
                 borderWidth: 2,
                 tension: 0.4,
-                fill: false,
+                fill: true,
+                pointRadius: 3,
+                pointHoverRadius: 6,
                 pointBackgroundColor: 'rgb(249, 115, 22)',
                 pointBorderColor: 'white',
                 pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 7,
             },
             {
-                label: 'SMR',
+                label: 'SMR (фокус)',
                 data: data.smr,
                 borderColor: 'rgb(168, 85, 247)',
                 backgroundColor: 'rgba(168, 85, 247, 0.1)',
                 borderWidth: 2,
                 tension: 0.4,
-                fill: false,
+                fill: true,
+                pointRadius: 3,
+                pointHoverRadius: 6,
                 pointBackgroundColor: 'rgb(168, 85, 247)',
                 pointBorderColor: 'white',
                 pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 7,
             }
         ]
     };
@@ -71,11 +71,22 @@ const AlphaBetaThetaChart = ({ data }) => {
     const options = {
         responsive: true,
         maintainAspectRatio: true,
+        animation: {
+            duration: 2000,
+            easing: 'easeInOutQuart'
+        },
         plugins: {
             legend: { position: 'top' },
             tooltip: {
                 mode: 'index',
                 intersect: false,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                titleColor: 'white',
+                bodyColor: '#e2e8f0',
+                borderColor: '#334155',
+                borderWidth: 1,
+                cornerRadius: 6,
+                displayColors: true,
                 callbacks: {
                     label: function(context) {
                         return `${context.dataset.label}: ${context.raw.toFixed(2)}`;
@@ -85,12 +96,14 @@ const AlphaBetaThetaChart = ({ data }) => {
         },
         scales: {
             y: {
-                title: { display: true, text: 'Амплитуда' },
-                grid: { color: '#e2e8f0' }
+                title: { display: true, text: 'Амплитуда', color: '#475569' },
+                grid: { color: '#e2e8f0' },
+                ticks: { color: '#475569' }
             },
             x: {
-                title: { display: true, text: 'Время' },
-                grid: { display: false }
+                title: { display: true, text: 'Время', color: '#475569' },
+                grid: { display: false },
+                ticks: { color: '#475569' }
             }
         }
     };

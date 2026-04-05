@@ -8,6 +8,10 @@ import AlphaBetaThetaChart from "../components/charts/AlphaBetaThetaChart";
 import RelaxChart from "../components/charts/RelaxChart";
 import StressChart from "../components/charts/StressChart";
 import MetricDescription from "../components/MetricDescription";
+import BrainWaveDistributionChart from "../components/charts/BrainWaveDistributionChart";
+import RadarPerformanceChart from "../components/charts/RadarPerformanceChart";
+import BarComparisonChart from "../components/charts/BarComparisonChart";
+import MultiAxisChart from "../components/charts/MultiAxisChart";
 
 function MyMetricsPage() {
   const { expeditionId } = useParams();
@@ -102,6 +106,41 @@ function MyMetricsPage() {
   };
   const relaxData = { labels, values: dashboardData.map(row => row.relax) };
   const stressData = { labels, values: dashboardData.map(row => row.stressIndex) };
+
+  const lastRow = dashboardData[dashboardData.length - 1];
+  const brainWaveDistributionData = {
+    alpha: lastRow?.alpha || 0,
+    beta: lastRow?.beta || 0,
+    theta: lastRow?.theta || 0,
+    smr: lastRow?.smr || 0,
+  };
+
+  const avgConcentration = dashboardData.reduce((sum, row) => sum + row.concentration, 0) / dashboardData.length;
+  const avgRelax = dashboardData.reduce((sum, row) => sum + row.relax, 0) / dashboardData.length;
+  const avgStress = dashboardData.reduce((sum, row) => sum + row.stressIndex, 0) / dashboardData.length;
+  const avgFatigue = dashboardData.reduce((sum, row) => sum + row.fatigue, 0) / dashboardData.length;
+  
+  const radarData = {
+    concentration: avgConcentration,
+    relax: avgRelax,
+    stress: avgStress,
+    fatigue: avgFatigue,
+    psychologicalFatigue: avgFatigue * 0.8,
+  };
+
+  const daysLabels = dashboardData.map((row, index) => `Сессия ${index + 1}`);
+  const barComparisonData = {
+    labels: daysLabels,
+    concentration: dashboardData.map(row => row.concentration),
+    relax: dashboardData.map(row => row.relax),
+    stress: dashboardData.map(row => row.stressIndex),
+  };
+
+  const multiAxisData = {
+    labels: labels,
+    concentration: dashboardData.map(row => row.concentration),
+    heartRate: dashboardData.map(row => row.heartRate),
+  };
 
   return (
     <div className="metrics">
@@ -218,6 +257,54 @@ function MyMetricsPage() {
             </p>
           </div>
           <AlphaBetaThetaChart data={alphaBetaThetaData} />
+        </div>
+      )}
+
+      {brainWaveDistributionData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>🥧 Распределение мозговых волн</h3>
+            <p className="metrics__chart-subtitle">
+              Текущее соотношение Alpha, Beta, Theta и SMR (последний замер)
+            </p>
+          </div>
+          <BrainWaveDistributionChart data={brainWaveDistributionData} />
+        </div>
+      )}
+
+      {radarData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>📡 Общий профиль состояния</h3>
+            <p className="metrics__chart-subtitle">
+              Усредненные показатели за всю экспедицию
+            </p>
+          </div>
+          <RadarPerformanceChart data={radarData} />
+        </div>
+      )}
+
+      {barComparisonData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>📊 Сравнение показателей по сессиям</h3>
+            <p className="metrics__chart-subtitle">
+              Концентрация, расслабление и стресс в каждом замере
+            </p>
+          </div>
+          <BarComparisonChart data={barComparisonData} />
+        </div>
+      )}
+
+      {multiAxisData && (
+        <div className="metrics__chart-section">
+          <div className="metrics__chart-header">
+            <h3>📈 Концентрация и ЧСС</h3>
+            <p className="metrics__chart-subtitle">
+              Сравнение динамики концентрации и частоты сердечных сокращений
+            </p>
+          </div>
+          <MultiAxisChart data={multiAxisData} />
         </div>
       )}
 

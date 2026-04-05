@@ -7,6 +7,11 @@ import FatigueChart from "../components/charts/FatigueChart";
 import AlphaBetaThetaChart from "../components/charts/AlphaBetaThetaChart";
 import RelaxChart from "../components/charts/RelaxChart";
 import StressChart from "../components/charts/StressChart";
+import MetricDescription from "../components/MetricDescription";
+import BrainWaveDistributionChart from "../components/charts/BrainWaveDistributionChart";
+import RadarPerformanceChart from "../components/charts/RadarPerformanceChart";
+import BarComparisonChart from "../components/charts/BarComparisonChart";
+import MultiAxisChart from "../components/charts/MultiAxisChart";
 
 function ParticipantMetricsPage() {
   const { expeditionId, participantId } = useParams();
@@ -131,6 +136,42 @@ function ParticipantMetricsPage() {
   const relaxData = { labels, values: dashboardData.map(row => row.relax) };
   const stressData = { labels, values: dashboardData.map(row => row.stress) };
 
+  // Данные для новых графиков
+  const lastRow = dashboardData[dashboardData.length - 1];
+  const brainWaveDistributionData = {
+    alpha: lastRow?.alpha || 0,
+    beta: lastRow?.beta || 0,
+    theta: lastRow?.theta || 0,
+    smr: lastRow?.smr || 0,
+  };
+
+  const avgConcentration = dashboardData.reduce((sum, row) => sum + row.concentration, 0) / dashboardData.length;
+  const avgRelax = dashboardData.reduce((sum, row) => sum + row.relax, 0) / dashboardData.length;
+  const avgStress = dashboardData.reduce((sum, row) => sum + row.stress, 0) / dashboardData.length;
+  const avgFatigue = dashboardData.reduce((sum, row) => sum + row.fatigue, 0) / dashboardData.length;
+  
+  const radarData = {
+    concentration: avgConcentration,
+    relax: avgRelax,
+    stress: avgStress,
+    fatigue: avgFatigue,
+    psychologicalFatigue: avgFatigue * 0.8,
+  };
+
+  const daysLabels = dashboardData.map((_, index) => `Сессия ${index + 1}`);
+  const barComparisonData = {
+    labels: daysLabels,
+    concentration: dashboardData.map(row => row.concentration),
+    relax: dashboardData.map(row => row.relax),
+    stress: dashboardData.map(row => row.stress),
+  };
+
+  const multiAxisData = {
+    labels: labels,
+    concentration: dashboardData.map(row => row.concentration),
+    heartRate: dashboardData.map(row => row.heartRate),
+  };
+
   return (
     <div className="participant-metrics">
       <div className="participant-metrics__header">
@@ -182,6 +223,29 @@ function ParticipantMetricsPage() {
         </div>
       </div>
 
+      <div className="participant-metrics__descriptions">
+        <MetricDescription 
+          title="Мозговая активность"
+          icon="🧠"
+          description="Alpha (8-12 Гц) — расслабление, спокойное состояние. Beta (12-30 Гц) — активность, концентрация. Theta (4-8 Гц) — дремота, творчество. SMR (12-15 Гц) — фокус при расслабленном теле."
+        />
+        <MetricDescription 
+          title="ЧСС"
+          icon="❤️"
+          description="Частота сердечных сокращений. Норма в покое: 60-80 уд/мин. Повышение может указывать на стресс или физическую нагрузку."
+        />
+        <MetricDescription 
+          title="Усталость"
+          icon="😴"
+          description="Уровень физического утомления. Высокие значения (>70%) сигнализируют о необходимости отдыха."
+        />
+        <MetricDescription 
+          title="Стресс"
+          icon="⚠️"
+          description="Индекс стресса. Повышенные значения требуют внимания и восстановления."
+        />
+      </div>
+
       <div className="participant-metrics__charts">
         {concentrationData && (
           <div className="participant-metrics__chart-section">
@@ -222,6 +286,58 @@ function ParticipantMetricsPage() {
               </p>
             </div>
             <AlphaBetaThetaChart data={alphaBetaThetaData} />
+          </div>
+        )}
+
+        {/* НОВЫЙ ГРАФИК 1: Кольцевая диаграмма */}
+        {brainWaveDistributionData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>🥧 Распределение мозговых волн</h3>
+              <p className="participant-metrics__chart-subtitle">
+                Текущее соотношение Alpha, Beta, Theta и SMR (последний замер)
+              </p>
+            </div>
+            <BrainWaveDistributionChart data={brainWaveDistributionData} />
+          </div>
+        )}
+
+        {/* НОВЫЙ ГРАФИК 2: Радарная диаграмма */}
+        {radarData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>📡 Общий профиль состояния</h3>
+              <p className="participant-metrics__chart-subtitle">
+                Усредненные показатели за всю экспедицию
+              </p>
+            </div>
+            <RadarPerformanceChart data={radarData} />
+          </div>
+        )}
+
+        {/* НОВЫЙ ГРАФИК 3: Столбчатая диаграмма сравнения */}
+        {barComparisonData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>📊 Сравнение показателей по сессиям</h3>
+              <p className="participant-metrics__chart-subtitle">
+                Концентрация, расслабление и стресс в каждом замере
+              </p>
+            </div>
+            <BarComparisonChart data={barComparisonData} />
+          </div>
+        )}
+
+        {/* НОВЫЙ ГРАФИК 4: Многоосевой график */}
+        {multiAxisData && (
+          <div className="participant-metrics__chart-section">
+            <div className="participant-metrics__chart-header">
+              <h3>📈 Концентрация и ЧСС</h3>
+              <p className="participant-metrics__chart-subtitle">
+                Сравнение динамики концентрации и частоты сердечных сокращений
+              </p>
+            </div>
+            <MultiAxisChart data={multiAxisData} />
           </div>
         )}
 
@@ -274,4 +390,4 @@ function ParticipantMetricsPage() {
   );
 }
 
-export default ParticipantMetricsPage;
+export default ParticipantMetricsPage;  
