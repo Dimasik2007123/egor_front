@@ -7,9 +7,6 @@ import FatigueChart from "../../components/charts/FatigueChart";
 import AlphaBetaThetaChart from "../../components/charts/AlphaBetaThetaChart";
 import RelaxChart from "../../components/charts/RelaxChart";
 import StressChart from "../../components/charts/StressChart";
-import GravityChart from "../../components/charts/GravityChart";
-import NFBChart from "../../components/charts/NFBChart";
-import PsychologicalFatigueChart from "../../components/charts/PsychologicalFatigueChart";
 
 function ExpeditionChartsPage() {
   const { id } = useParams();
@@ -54,12 +51,9 @@ function ExpeditionChartsPage() {
     { key: "concentration", label: "🎯 Концентрация", component: ConcentrationChart },
     { key: "heartRate", label: "❤️ ЧСС", component: HeartRateChart },
     { key: "fatigue", label: "😴 Усталость", component: FatigueChart },
-    { key: "alphaBetaTheta", label: "🧠 Альфа-Бета-Тета", component: AlphaBetaThetaChart },
+    { key: "alphaBetaTheta", label: "🧠 Мозговая активность", component: AlphaBetaThetaChart },
     { key: "relax", label: "🧘 Расслабление", component: RelaxChart },
     { key: "stress", label: "⚠️ Стресс", component: StressChart },
-    { key: "gravity", label: "⚖️ Гравитация", component: GravityChart },
-    { key: "nfb", label: "🤖 NFB", component: NFBChart },
-    { key: "psychologicalFatigue", label: "🧠 Псих. усталость", component: PsychologicalFatigueChart },
   ];
 
   if (loading) {
@@ -80,13 +74,11 @@ function ExpeditionChartsPage() {
       labels,
       alpha: dashboardData.map(row => row.alpha),
       beta: dashboardData.map(row => row.beta),
-      theta: dashboardData.map(row => row.theta)
+      theta: dashboardData.map(row => row.theta),
+      smr: dashboardData.map(row => row.smr)
     },
     relax: { labels, values: dashboardData.map(row => row.relax) },
     stress: { labels, values: dashboardData.map(row => row.stress) },
-    gravity: { labels, values: dashboardData.map(row => row.gravity) },
-    nfb: { labels, values: dashboardData.map(row => row.smr) },
-    psychologicalFatigue: { labels, values: dashboardData.map(row => row.fatigue) },
   };
 
   const ActiveChartComponent = chartTypes.find(c => c.key === activeChart)?.component;

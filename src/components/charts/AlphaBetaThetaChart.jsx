@@ -50,6 +50,20 @@ const AlphaBetaThetaChart = ({ data }) => {
                 pointBorderWidth: 2,
                 pointRadius: 4,
                 pointHoverRadius: 7,
+            },
+            {
+                label: 'SMR',
+                data: data.smr,
+                borderColor: 'rgb(168, 85, 247)',
+                backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                borderWidth: 2,
+                tension: 0.4,
+                fill: false,
+                pointBackgroundColor: 'rgb(168, 85, 247)',
+                pointBorderColor: 'white',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 7,
             }
         ]
     };

@@ -7,9 +7,7 @@ import FatigueChart from "../components/charts/FatigueChart";
 import AlphaBetaThetaChart from "../components/charts/AlphaBetaThetaChart";
 import RelaxChart from "../components/charts/RelaxChart";
 import StressChart from "../components/charts/StressChart";
-import GravityChart from "../components/charts/GravityChart";
-import NFBChart from "../components/charts/NFBChart";
-import PsychologicalFatigueChart from "../components/charts/PsychologicalFatigueChart";
+import MetricDescription from "../components/MetricDescription";
 
 function MyMetricsPage() {
   const { expeditionId } = useParams();
@@ -99,13 +97,11 @@ function MyMetricsPage() {
     labels,
     alpha: dashboardData.map(row => row.alpha),
     beta: dashboardData.map(row => row.beta),
-    theta: dashboardData.map(row => row.theta)
+    theta: dashboardData.map(row => row.theta),
+    smr: dashboardData.map(row => row.smr)
   };
   const relaxData = { labels, values: dashboardData.map(row => row.relax) };
-  const stressData = { labels, values: dashboardData.map(row => row.stress) };
-  const gravityData = { labels, values: dashboardData.map(row => row.gravity) };
-  const nfbData = { labels, values: dashboardData.map(row => row.smr) };
-  const psychologicalFatigueData = { labels, values: dashboardData.map(row => row.fatigue) };
+  const stressData = { labels, values: dashboardData.map(row => row.stressIndex) };
 
   return (
     <div className="metrics">
@@ -160,6 +156,29 @@ function MyMetricsPage() {
         </div>
       </div>
 
+      <div className="metrics__descriptions">
+        <MetricDescription 
+          title="Мозговая активность"
+          icon="🧠"
+          description="Alpha (8-12 Гц) — расслабление, спокойное состояние. Beta (12-30 Гц) — активность, концентрация. Theta (4-8 Гц) — дремота, творчество. SMR (12-15 Гц) — фокус при расслабленном теле."
+        />
+        <MetricDescription 
+          title="ЧСС"
+          icon="❤️"
+          description="Частота сердечных сокращений. Норма в покое: 60-80 уд/мин. Повышение может указывать на стресс или физическую нагрузку."
+        />
+        <MetricDescription 
+          title="Усталость"
+          icon="😴"
+          description="Уровень физического утомления. Высокие значения (>70%) сигнализируют о необходимости отдыха."
+        />
+        <MetricDescription 
+          title="Стресс"
+          icon="⚠️"
+          description="Индекс стресса. Повышенные значения требуют внимания и восстановления."
+        />
+      </div>
+
       {concentrationData && (
         <div className="metrics__chart-section">
           <div className="metrics__chart-header">
@@ -193,8 +212,10 @@ function MyMetricsPage() {
       {alphaBetaThetaData && (
         <div className="metrics__chart-section">
           <div className="metrics__chart-header">
-            <h3>🧠 Альфа-Бета-Тета волны</h3>
-            <p className="metrics__chart-subtitle">Динамика мозговой активности</p>
+            <h3>🧠 Мозговая активность</h3>
+            <p className="metrics__chart-subtitle">
+              Alpha (расслабление) · Beta (активность) · Theta (дремота) · SMR (фокус)
+            </p>
           </div>
           <AlphaBetaThetaChart data={alphaBetaThetaData} />
         </div>
@@ -217,36 +238,6 @@ function MyMetricsPage() {
             <p className="metrics__chart-subtitle">Динамика уровня стресса</p>
           </div>
           <StressChart data={stressData} />
-        </div>
-      )}
-
-      {gravityData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>⚖️ Gravity</h3>
-            <p className="metrics__chart-subtitle">Динамика гравитационного фактора</p>
-          </div>
-          <GravityChart data={gravityData} />
-        </div>
-      )}
-
-      {nfbData && nfbData.values && nfbData.values.some(v => v !== null && v !== 0) && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>🤖 NFB</h3>
-            <p className="metrics__chart-subtitle">Сенсомоторный ритм (SMR)</p>
-          </div>
-          <NFBChart data={nfbData} />
-        </div>
-      )}
-
-      {psychologicalFatigueData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>🧠 Психологическая усталость</h3>
-            <p className="metrics__chart-subtitle">Динамика психологической усталости</p>
-          </div>
-          <PsychologicalFatigueChart data={psychologicalFatigueData} />
         </div>
       )}
 
