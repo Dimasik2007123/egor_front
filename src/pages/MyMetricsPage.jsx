@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { expeditionApi, analyticsApi, dashboardApi } from "../api/ArcticApi";
-import ConcentrationChart from "../components/charts/ConcentrationChart";
-import HeartRateChart from "../components/charts/HeartRateChart";
-import FatigueChart from "../components/charts/FatigueChart";
 import AlphaBetaThetaChart from "../components/charts/AlphaBetaThetaChart";
-import RelaxChart from "../components/charts/RelaxChart";
-import StressChart from "../components/charts/StressChart";
 import MetricDescription from "../components/MetricDescription";
 import BrainWaveDistributionChart from "../components/charts/BrainWaveDistributionChart";
-import RadarPerformanceChart from "../components/charts/RadarPerformanceChart";
-import BarComparisonChart from "../components/charts/BarComparisonChart";
-import MultiAxisChart from "../components/charts/MultiAxisChart";
+import FatigueModulesChart from "../components/charts/FatigueModulesChart";
+import EmotionalRawMetricsChart from "../components/charts/EmotionalRawMetricsChart";
+import ObjectiveVsSubjectiveChart from "../components/charts/ObjectiveVsSubjectiveChart";
+import ProductivityChart from "../components/charts/ProductivityChart";
+import TotalIndexGaugeChart from "../components/charts/TotalIndexGaugeChart";
+import FatigueRadarChart from "../components/charts/FatigueRadarChart";
+import TotalIndexTrendChart from "../components/charts/TotalIndexTrendChart";
+import ObjectiveCognitiveBarChart from "../components/charts/ObjectiveCognitiveBarChart";
 
 function MyMetricsPage() {
   const { expeditionId } = useParams();
@@ -92,54 +92,23 @@ function MyMetricsPage() {
     );
   }
 
-  const labels = dashboardData.map(row => `${row.date} ${row.timeOfDay}`);
+  const sessions = dashboardData;
+  const lastSession = sessions[sessions.length - 1];
 
-  const concentrationData = { labels, values: dashboardData.map(row => row.concentration) };
-  const heartRateData = { labels, values: dashboardData.map(row => row.heartRate) };
-  const fatigueData = { labels, values: dashboardData.map(row => row.fatigue) };
+  const labels = sessions.map(s => `${s.date} ${s.timeOfDay}`);
   const alphaBetaThetaData = {
     labels,
-    alpha: dashboardData.map(row => row.alpha),
-    beta: dashboardData.map(row => row.beta),
-    theta: dashboardData.map(row => row.theta),
-    smr: dashboardData.map(row => row.smr)
+    alpha: sessions.map(s => s.alpha || 0),
+    beta: sessions.map(s => s.beta || 0),
+    theta: sessions.map(s => s.theta || 0),
+    smr: sessions.map(s => s.smr || 0)
   };
-  const relaxData = { labels, values: dashboardData.map(row => row.relax) };
-  const stressData = { labels, values: dashboardData.map(row => row.stressIndex) };
 
-  const lastRow = dashboardData[dashboardData.length - 1];
   const brainWaveDistributionData = {
-    alpha: lastRow?.alpha || 0,
-    beta: lastRow?.beta || 0,
-    theta: lastRow?.theta || 0,
-    smr: lastRow?.smr || 0,
-  };
-
-  const avgConcentration = dashboardData.reduce((sum, row) => sum + row.concentration, 0) / dashboardData.length;
-  const avgRelax = dashboardData.reduce((sum, row) => sum + row.relax, 0) / dashboardData.length;
-  const avgStress = dashboardData.reduce((sum, row) => sum + row.stressIndex, 0) / dashboardData.length;
-  const avgFatigue = dashboardData.reduce((sum, row) => sum + row.fatigue, 0) / dashboardData.length;
-  
-  const radarData = {
-    concentration: avgConcentration,
-    relax: avgRelax,
-    stress: avgStress,
-    fatigue: avgFatigue,
-    psychologicalFatigue: avgFatigue * 0.8,
-  };
-
-  const daysLabels = dashboardData.map((row, index) => `Сессия ${index + 1}`);
-  const barComparisonData = {
-    labels: daysLabels,
-    concentration: dashboardData.map(row => row.concentration),
-    relax: dashboardData.map(row => row.relax),
-    stress: dashboardData.map(row => row.stressIndex),
-  };
-
-  const multiAxisData = {
-    labels: labels,
-    concentration: dashboardData.map(row => row.concentration),
-    heartRate: dashboardData.map(row => row.heartRate),
+    alpha: lastSession?.alpha || 0,
+    beta: lastSession?.beta || 0,
+    theta: lastSession?.theta || 0,
+    smr: lastSession?.smr || 0,
   };
 
   return (
@@ -201,52 +170,8 @@ function MyMetricsPage() {
           icon="🧠"
           description="Alpha (8-12 Гц) — расслабление, спокойное состояние. Beta (12-30 Гц) — активность, концентрация. Theta (4-8 Гц) — дремота, творчество. SMR (12-15 Гц) — фокус при расслабленном теле."
         />
-        <MetricDescription 
-          title="ЧСС"
-          icon="❤️"
-          description="Частота сердечных сокращений. Норма в покое: 60-80 уд/мин. Повышение может указывать на стресс или физическую нагрузку."
-        />
-        <MetricDescription 
-          title="Усталость"
-          icon="😴"
-          description="Уровень физического утомления. Высокие значения (>70%) сигнализируют о необходимости отдыха."
-        />
-        <MetricDescription 
-          title="Стресс"
-          icon="⚠️"
-          description="Индекс стресса. Повышенные значения требуют внимания и восстановления."
-        />
       </div>
 
-      {concentrationData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>🎯 Концентрация</h3>
-            <p className="metrics__chart-subtitle">Динамика концентрации по времени</p>
-          </div>
-          <ConcentrationChart data={concentrationData} />
-        </div>
-      )}
-
-      {heartRateData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>❤️ Частота сердечных сокращений</h3>
-            <p className="metrics__chart-subtitle">Динамика ЧСС по времени</p>
-          </div>
-          <HeartRateChart data={heartRateData} />
-        </div>
-      )}
-
-      {fatigueData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>😴 Усталость</h3>
-            <p className="metrics__chart-subtitle">Динамика усталости по времени</p>
-          </div>
-          <FatigueChart data={fatigueData} />
-        </div>
-      )}
 
       {alphaBetaThetaData && (
         <div className="metrics__chart-section">
@@ -272,61 +197,87 @@ function MyMetricsPage() {
         </div>
       )}
 
-      {radarData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>📡 Общий профиль состояния</h3>
-            <p className="metrics__chart-subtitle">
-              Усредненные показатели за всю экспедицию
-            </p>
-          </div>
-          <RadarPerformanceChart data={radarData} />
-        </div>
-      )}
 
-      {barComparisonData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>📊 Сравнение показателей по сессиям</h3>
-            <p className="metrics__chart-subtitle">
-              Концентрация, расслабление и стресс в каждом замере
-            </p>
-          </div>
-          <BarComparisonChart data={barComparisonData} />
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>📊 Динамика усталости</h3>
+          <p className="metrics__chart-subtitle">
+            Когнитивная, физиологическая и психологическая усталость по сессиям
+          </p>
         </div>
-      )}
+        <FatigueModulesChart sessions={sessions} />
+      </div>
 
-      {multiAxisData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>📈 Концентрация и ЧСС</h3>
-            <p className="metrics__chart-subtitle">
-              Сравнение динамики концентрации и частоты сердечных сокращений
-            </p>
-          </div>
-          <MultiAxisChart data={multiAxisData} />
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>❤️ Эмоциональные показатели</h3>
+          <p className="metrics__chart-subtitle">
+            Внимание, когнитивная нагрузка, самоконтроль и когнитивный контроль
+          </p>
         </div>
-      )}
+        <EmotionalRawMetricsChart sessions={sessions} />
+      </div>
 
-      {relaxData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>🧘 Расслабление</h3>
-            <p className="metrics__chart-subtitle">Динамика расслабления по времени</p>
-          </div>
-          <RelaxChart data={relaxData} />
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>📈 Продуктивность</h3>
+          <p className="metrics__chart-subtitle">
+            Динамика продуктивности по сессиям
+          </p>
         </div>
-      )}
+        <ProductivityChart sessions={sessions} />
+      </div>
 
-      {stressData && (
-        <div className="metrics__chart-section">
-          <div className="metrics__chart-header">
-            <h3>⚠️ Стресс</h3>
-            <p className="metrics__chart-subtitle">Динамика уровня стресса</p>
-          </div>
-          <StressChart data={stressData} />
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>🎯 Объективная vs Субъективная оценка</h3>
+          <p className="metrics__chart-subtitle">
+            Сравнение реальных и самооценённых показателей (последняя сессия)
+          </p>
         </div>
-      )}
+        <ObjectiveVsSubjectiveChart session={lastSession} />
+      </div>
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>🎯 Общий индекс состояния</h3>
+          <p className="metrics__chart-subtitle">
+            Текущее общее состояние (последняя сессия)
+          </p>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <TotalIndexGaugeChart session={lastSession} />
+        </div>
+      </div>
+
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>🔄 Радар усталости</h3>
+          <p className="metrics__chart-subtitle">
+            Сравнение когнитивной, физиологической и психологической усталости
+          </p>
+        </div>
+        <FatigueRadarChart session={lastSession} />
+      </div>
+
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>📈 Тренд общего индекса</h3>
+          <p className="metrics__chart-subtitle">
+            Динамика общего состояния по сессиям
+          </p>
+        </div>
+        <TotalIndexTrendChart sessions={sessions} />
+      </div>
+
+      <div className="metrics__chart-section">
+        <div className="metrics__chart-header">
+          <h3>📊 Объективные оценки по сессиям</h3>
+          <p className="metrics__chart-subtitle">
+            Когнитивная, физиологическая и психологическая оценки
+          </p>
+        </div>
+        <ObjectiveCognitiveBarChart sessions={sessions} />
+      </div>
 
       <div className="metrics__advice-section">
         <button 
