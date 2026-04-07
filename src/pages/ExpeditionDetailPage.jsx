@@ -110,7 +110,7 @@ function ExpeditionDetailPage() {
           onClick={handleViewMyMetrics}
           style={{ minWidth: "200px" }}
         >
-          📊 Просмотреть мои метрики
+          Просмотреть мои метрики
         </button>
       );
     } else if (expedition.role === "LEADER") {
@@ -120,7 +120,7 @@ function ExpeditionDetailPage() {
             className="expedition-detail__button--metrics"
             onClick={handleViewMyMetrics}
           >
-            📊 Мои метрики (как участник)
+            <strong>Посмотреть мои метрики</strong>
           </button>
         </div>
       );
@@ -186,7 +186,7 @@ function ExpeditionDetailPage() {
         <div className="expedition-detail__card">
           <div className="expedition-detail__card-header">
             <h2 className="expedition-detail__card-header-text">
-              🏔️ {expedition.name}
+              {expedition.name}
             </h2>
           </div>
 
@@ -198,7 +198,7 @@ function ExpeditionDetailPage() {
                   className={`expedition-detail__tab-button ${activeTab === "info" ? "expedition-detail__tab-button--active" : ""}`}
                   onClick={() => setActiveTab("info")}
                 >
-                  📋 Информация
+                  Информация
                 </button>
               </li>
               {expedition.role === "LEADER" && (
@@ -207,7 +207,7 @@ function ExpeditionDetailPage() {
                     className={`expedition-detail__tab-button ${activeTab === "participants" ? "expedition-detail__tab-button--active" : ""}`}
                     onClick={() => setActiveTab("participants")}
                   >
-                    👥 Участники ({participants.length})
+                    Участники ({participants.length})
                   </button>
                 </li>
               )}
@@ -279,7 +279,7 @@ function ExpeditionDetailPage() {
                         </div>
                         <div className="expedition-detail__stats-item">
                           <div className="expedition-detail__stats-card">
-                            <h3>📊</h3>
+                            <h3>📊  </h3>
                             <h4>0</h4>
                             <p className="expedition-detail__text--muted">
                               Метрик

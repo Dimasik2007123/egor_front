@@ -297,7 +297,7 @@
         <div className="dashboard__card">
           <div className="dashboard__card-header dashboard__card-header--primary">
             <h5 className="dashboard__card-title">
-              👤 Информация о текущем пользователе
+              Информация о текущем пользователе
             </h5>
           </div>
           <div className="dashboard__card-body">
@@ -328,7 +328,7 @@
         <div className="dashboard__card">
           <div className="dashboard__card-header dashboard__card-header--primary">
             <h5 className="dashboard__card-title">
-              👑 Мои экспедиции (как руководитель)
+              Мои экспедиции (как руководитель)
               <span className="dashboard__badge dashboard__badge--light">
                 {expeditions.asLeader.length}
               </span>
@@ -364,7 +364,7 @@
         <div className="dashboard__card">
           <div className="dashboard__card-header dashboard__card-header--success">
             <h5 className="dashboard__card-title">
-              🧑‍🤝‍🧑 Мои экспедиции (как участник)
+              Мои экспедиции (как участник)
               <span className="dashboard__badge dashboard__badge--light dashboard__badge--success-text">
                 {expeditions.asParticipant.length}
               </span>

@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { dashboardApi, analyticsApi } from "../../api/ArcticApi";
-import ConcentrationChart from "../../components/charts/ConcentrationChart";
-import HeartRateChart from "../../components/charts/HeartRateChart";
-import FatigueChart from "../../components/charts/FatigueChart";
 import AlphaBetaThetaChart from "../../components/charts/AlphaBetaThetaChart";
-import RelaxChart from "../../components/charts/RelaxChart";
-import StressChart from "../../components/charts/StressChart";
 import BrainWaveDistributionChart from "../../components/charts/BrainWaveDistributionChart";
-import RadarPerformanceChart from "../../components/charts/RadarPerformanceChart";
-import BarComparisonChart from "../../components/charts/BarComparisonChart";
-import MultiAxisChart from "../../components/charts/MultiAxisChart";
+import FatigueModulesChart from "../../components/charts/FatigueModulesChart";
+import EmotionalRawMetricsChart from "../../components/charts/EmotionalRawMetricsChart";
+import ObjectiveVsSubjectiveChart from "../../components/charts/ObjectiveVsSubjectiveChart";
+import ProductivityChart from "../../components/charts/ProductivityChart";
+import TotalIndexGaugeChart from "../../components/charts/TotalIndexGaugeChart";
+import FatigueRadarChart from "../../components/charts/FatigueRadarChart";
+import TotalIndexTrendChart from "../../components/charts/TotalIndexTrendChart";
+import ObjectiveCognitiveBarChart from "../../components/charts/ObjectiveCognitiveBarChart";
 
 function ExpeditionChartsPage() {
   const { id } = useParams();
@@ -20,7 +20,7 @@ function ExpeditionChartsPage() {
 
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
-  const [activeChart, setActiveChart] = useState("concentration");
+  const [activeChart, setActiveChart] = useState("alphaBetaTheta");
   const [advice, setAdvice] = useState(null);
   const [loadingAdvice, setLoadingAdvice] = useState(false);
 
@@ -52,16 +52,15 @@ function ExpeditionChartsPage() {
   }, [id, indNum]);
 
   const chartTypes = [
-    { key: "concentration", label: "🎯 Концентрация", component: ConcentrationChart },
-    { key: "heartRate", label: "❤️ ЧСС", component: HeartRateChart },
-    { key: "fatigue", label: "😴 Усталость", component: FatigueChart },
-    { key: "alphaBetaTheta", label: "🧠 Мозговая активность", component: AlphaBetaThetaChart },
-    { key: "relax", label: "🧘 Расслабление", component: RelaxChart },
-    { key: "stress", label: "⚠️ Стресс", component: StressChart },
-    { key: "brainWaveDistribution", label: "🥧 Распределение волн", component: BrainWaveDistributionChart },
-    { key: "radarPerformance", label: "📡 Радар показателей", component: RadarPerformanceChart },
-    { key: "barComparison", label: "📊 Сравнение", component: BarComparisonChart },
-    { key: "multiAxis", label: "📈 Конц. + ЧСС", component: MultiAxisChart },
+    { key: "alphaBetaTheta", label: "Мозговая активность", component: AlphaBetaThetaChart },
+    { key: "brainWaveDistribution", label: "Распределение волн", component: BrainWaveDistributionChart },
+    { key: "fatigueModules", label: "Усталость", component: FatigueModulesChart },
+    { key: "emotional", label: "Эмоции", component: EmotionalRawMetricsChart },
+    { key: "productivity", label: "Продуктивность", component: ProductivityChart },
+    { key: "objectiveVsSubjective", label: "Объективная vs Субъективная", component: ObjectiveVsSubjectiveChart },
+    { key: "totalIndexGauge", label: "Общий индекс", component: TotalIndexGaugeChart },
+    { key: "totalIndexTrend", label: "Тренд индекса", component: TotalIndexTrendChart },
+    { key: "objectiveCognitive", label: "Объективные оценки", component: ObjectiveCognitiveBarChart },
   ];
 
   if (loading) {
@@ -72,57 +71,33 @@ function ExpeditionChartsPage() {
     return <div className="charts__empty-message">Нет данных</div>;
   }
 
-  const labels = dashboardData.map(row => `${row.date} ${row.timeOfDay}`);
+  const sessions = dashboardData;
+  const lastSession = sessions[sessions.length - 1];
+
+  const labels = sessions.map(s => `${s.date} ${s.timeOfDay}`);
   
   const chartDataMap = {
-    concentration: { labels, values: dashboardData.map(row => row.concentration) },
-    heartRate: { labels, values: dashboardData.map(row => row.heartRate) },
-    fatigue: { labels, values: dashboardData.map(row => row.fatigue) },
     alphaBetaTheta: {
       labels,
-      alpha: dashboardData.map(row => row.alpha),
-      beta: dashboardData.map(row => row.beta),
-      theta: dashboardData.map(row => row.theta),
-      smr: dashboardData.map(row => row.smr)
+      alpha: sessions.map(s => s.alpha || 0),
+      beta: sessions.map(s => s.beta || 0),
+      theta: sessions.map(s => s.theta || 0),
+      smr: sessions.map(s => s.smr || 0)
     },
-    relax: { labels, values: dashboardData.map(row => row.relax) },
-    stress: { labels, values: dashboardData.map(row => row.stress) },
-  };
-
-  // Данные для новых графиков
-  const lastRow = dashboardData[dashboardData.length - 1];
-  chartDataMap.brainWaveDistribution = {
-    alpha: lastRow?.alpha || 0,
-    beta: lastRow?.beta || 0,
-    theta: lastRow?.theta || 0,
-    smr: lastRow?.smr || 0,
-  };
-
-  const avgConcentration = dashboardData.reduce((sum, row) => sum + row.concentration, 0) / dashboardData.length;
-  const avgRelax = dashboardData.reduce((sum, row) => sum + row.relax, 0) / dashboardData.length;
-  const avgStress = dashboardData.reduce((sum, row) => sum + row.stress, 0) / dashboardData.length;
-  const avgFatigue = dashboardData.reduce((sum, row) => sum + row.fatigue, 0) / dashboardData.length;
-  
-  chartDataMap.radarPerformance = {
-    concentration: avgConcentration,
-    relax: avgRelax,
-    stress: avgStress,
-    fatigue: avgFatigue,
-    psychologicalFatigue: avgFatigue * 0.8,
-  };
-
-  const daysLabels = dashboardData.map((_, index) => `Сессия ${index + 1}`);
-  chartDataMap.barComparison = {
-    labels: daysLabels,
-    concentration: dashboardData.map(row => row.concentration),
-    relax: dashboardData.map(row => row.relax),
-    stress: dashboardData.map(row => row.stress),
-  };
-
-  chartDataMap.multiAxis = {
-    labels: labels,
-    concentration: dashboardData.map(row => row.concentration),
-    heartRate: dashboardData.map(row => row.heartRate),
+    brainWaveDistribution: {
+      alpha: lastSession?.alpha || 0,
+      beta: lastSession?.beta || 0,
+      theta: lastSession?.theta || 0,
+      smr: lastSession?.smr || 0,
+    },
+    fatigueModules: { sessions },
+    emotional: { sessions },
+    productivity: { sessions },
+    objectiveVsSubjective: { session: lastSession },
+    totalIndexGauge: { session: lastSession },
+    fatigueRadar: { session: lastSession },
+    totalIndexTrend: { sessions },
+    objectiveCognitive: { sessions },
   };
 
   const ActiveChartComponent = chartTypes.find(c => c.key === activeChart)?.component;
@@ -153,7 +128,7 @@ function ExpeditionChartsPage() {
         </div>
         <div className="charts__card-body">
           {ActiveChartComponent && (
-            <ActiveChartComponent data={chartDataMap[activeChart]} />
+            <ActiveChartComponent {...chartDataMap[activeChart]} />
           )}
         </div>
       </div>

@@ -118,7 +118,7 @@ function MyMetricsPage() {
           ← Назад к экспедиции
         </button>
         <div>
-          <h2 className="metrics__title">📊 Мои метрики</h2>
+          <h2 className="metrics__title">Мои метрики</h2>
           {expedition && (
             <p className="metrics__subtitle">Экспедиция: {expedition.name}</p>
           )}
@@ -127,7 +127,7 @@ function MyMetricsPage() {
 
       <div className="metrics__participant-card">
         <div className="metrics__participant-header">
-          <div className="metrics__participant-icon">👤</div>
+          <div className="metrics__participant-icon"></div>
           <h3>Информация об участнике</h3>
         </div>
         <div className="metrics__participant-body">
@@ -176,7 +176,7 @@ function MyMetricsPage() {
       {alphaBetaThetaData && (
         <div className="metrics__chart-section">
           <div className="metrics__chart-header">
-            <h3>🧠 Мозговая активность</h3>
+            <h3>Мозговая активность</h3>
             <p className="metrics__chart-subtitle">
               Alpha (расслабление) · Beta (активность) · Theta (дремота) · SMR (фокус)
             </p>
@@ -188,7 +188,7 @@ function MyMetricsPage() {
       {brainWaveDistributionData && (
         <div className="metrics__chart-section">
           <div className="metrics__chart-header">
-            <h3>🥧 Распределение мозговых волн</h3>
+            <h3>Распределение мозговых волн</h3>
             <p className="metrics__chart-subtitle">
               Текущее соотношение Alpha, Beta, Theta и SMR (последний замер)
             </p>
@@ -200,7 +200,7 @@ function MyMetricsPage() {
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
-          <h3>📊 Динамика усталости</h3>
+          <h3>Динамика усталости</h3>
           <p className="metrics__chart-subtitle">
             Когнитивная, физиологическая и психологическая усталость по сессиям
           </p>
@@ -210,7 +210,7 @@ function MyMetricsPage() {
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
-          <h3>❤️ Эмоциональные показатели</h3>
+          <h3>Эмоциональные показатели</h3>
           <p className="metrics__chart-subtitle">
             Внимание, когнитивная нагрузка, самоконтроль и когнитивный контроль
           </p>
@@ -220,7 +220,7 @@ function MyMetricsPage() {
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
-          <h3>📈 Продуктивность</h3>
+          <h3>Продуктивность</h3>
           <p className="metrics__chart-subtitle">
             Динамика продуктивности по сессиям
           </p>
@@ -230,7 +230,7 @@ function MyMetricsPage() {
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
-          <h3>🎯 Объективная vs Субъективная оценка</h3>
+          <h3>Объективная vs Субъективная оценка</h3>
           <p className="metrics__chart-subtitle">
             Сравнение реальных и самооценённых показателей (последняя сессия)
           </p>
@@ -239,7 +239,7 @@ function MyMetricsPage() {
       </div>
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
-          <h3>🎯 Общий индекс состояния</h3>
+          <h3>Общий индекс состояния</h3>
           <p className="metrics__chart-subtitle">
             Текущее общее состояние (последняя сессия)
           </p>
@@ -251,17 +251,7 @@ function MyMetricsPage() {
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
-          <h3>🔄 Радар усталости</h3>
-          <p className="metrics__chart-subtitle">
-            Сравнение когнитивной, физиологической и психологической усталости
-          </p>
-        </div>
-        <FatigueRadarChart session={lastSession} />
-      </div>
-
-      <div className="metrics__chart-section">
-        <div className="metrics__chart-header">
-          <h3>📈 Тренд общего индекса</h3>
+          <h3>Тренд общего индекса</h3>
           <p className="metrics__chart-subtitle">
             Динамика общего состояния по сессиям
           </p>
@@ -271,7 +261,7 @@ function MyMetricsPage() {
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
-          <h3>📊 Объективные оценки по сессиям</h3>
+          <h3>Объективные оценки по сессиям</h3>
           <p className="metrics__chart-subtitle">
             Когнитивная, физиологическая и психологическая оценки
           </p>
