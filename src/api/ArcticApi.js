@@ -55,6 +55,11 @@ export const expeditionApi = {
 
   leaveExpedition: (expeditionId) =>
     api.delete(`/expeditions/${expeditionId}/leave`).then(handleResponse),
+
+  getAllExpeditionsPaginated: (page = 0, size = 10, sortBy = "id", direction = "asc") =>
+    api
+      .get(`/expeditions?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`)
+      .then(handleResponse),
 };
 
 export const userApi = {

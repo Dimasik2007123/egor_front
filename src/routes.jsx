@@ -8,6 +8,9 @@ import MyMetricsPage from "./pages/MyMetricsPage";
 import ParticipantMetricsPage from "./pages/ParticipantMetricsPage";
 import ExpeditionMembersPage from "./pages/expedition/ExpeditionMembersPage";
 import ExpeditionChartsPage from "./pages/charts/ExpeditionChartsPage";
+import AdminExpeditionsPage from "./pages/AdminExpeditionsPage";
+import AdminExpeditionMembersPage from "./pages/AdminExpeditionMembersPage";
+import AdminParticipantChartsPage from "./pages/AdminParticipantChartsPage";
 
 export const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("accessToken");
@@ -84,6 +87,30 @@ export const routesConfig = [
       </AdminRoute>
     ),
   },
+  {
+    path: "/admin/expeditions",
+    element: (
+      <AdminRoute>
+        <AdminExpeditionsPage />
+     </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/expeditions/:expeditionId/members",
+    element: (
+      <AdminRoute>
+        <AdminExpeditionMembersPage />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/expeditions/:expeditionId/charts/:indNum",
+    element: (
+      <AdminRoute>
+        <AdminParticipantChartsPage />
+      </AdminRoute>
+    ),
+  }, 
   {
     path: "/expeditions/:id/participants",
     element: (

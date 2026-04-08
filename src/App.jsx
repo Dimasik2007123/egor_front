@@ -3,6 +3,7 @@ import "./assets/animations.css";
 import "./assets/styles_new.css";
 import { routesConfig } from "./routes";
 
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,6 +19,8 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
+
+
 
 ChartJS.register(
   CategoryScale,
