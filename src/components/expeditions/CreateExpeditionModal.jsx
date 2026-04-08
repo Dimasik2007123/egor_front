@@ -51,9 +51,7 @@ function CreateExpeditionModal({ show, onClose, onSubmit }) {
 
     if (!formData.startDate) {
       newErrors.startDate = "Дата начала обязательна";
-    } else if (new Date(formData.startDate) < new Date()) {
-      newErrors.startDate = "Дата начала не может быть в прошлом";
-    }
+    } 
 
     if (!formData.endDate) {
       newErrors.endDate = "Дата окончания обязательна";
@@ -178,7 +176,6 @@ function CreateExpeditionModal({ show, onClose, onSubmit }) {
                     value={formData.startDate}
                     onChange={handleChange}
                     disabled={loading}
-                    min={getDateString(new Date())}
                   />
                   {errors.startDate && (
                     <div className="create-modal__form-field--error">
