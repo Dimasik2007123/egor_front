@@ -43,6 +43,12 @@ function EditExpeditionModal({
     setLoading(true);
     setError("");
 
+    if (new Date(formData.endDate) <= new Date(formData.startDate)) {
+      setError("Дата окончания должна быть после даты начала");
+      setLoading(false);
+      return;
+    }
+
     try {
       await onUpdate(formData);
     } catch (error) {
