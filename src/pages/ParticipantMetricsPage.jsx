@@ -123,6 +123,8 @@ function ParticipantMetricsPage() {
     smr: lastSession?.smr || 0,
   };
 
+
+
   return (
     <div className="metrics">
       <div className="metrics__header">
@@ -185,7 +187,6 @@ function ParticipantMetricsPage() {
       </div>
 
 
-      {/* ==================== ГРАФИКИ ==================== */}
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">
@@ -194,8 +195,8 @@ function ParticipantMetricsPage() {
             Alpha (расслабление) · Beta (активность) · Theta (дремота) · SMR (фокус)
           </p>
         </div>
-        <AlphaBetaThetaChart data={alphaBetaThetaData} />
-      </div>
+        <AlphaBetaThetaChart sessions={sessions} />
+        </div>
 
       <div className="metrics__chart-section">
         <div className="metrics__chart-header">

@@ -7,7 +7,7 @@ const ProductivityChart = ({ sessions }) => {
         datasets: [
             {
                 label: 'Продуктивность',
-                data: sessions.map(s => s.productivity || 0),
+                data: sessions.map(s => (s.productivity || 0) * 100),
                 borderColor: 'rgb(16, 185, 129)',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 borderWidth: 3,

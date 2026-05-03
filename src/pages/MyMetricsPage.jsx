@@ -23,7 +23,7 @@ function MyMetricsPage() {
   const [expeditionData, setExpeditionData] = useState(null);
   const [expedition, setExpedition] = useState(null);
   const [loadingAdvice, setLoadingAdvice] = useState(false);
-
+  
   const loadAdvice = async () => {
     setLoadingAdvice(true);
     try {
@@ -94,15 +94,9 @@ function MyMetricsPage() {
 
   const sessions = dashboardData;
   const lastSession = sessions[sessions.length - 1];
-
+  
   const labels = sessions.map(s => `${s.date} ${s.timeOfDay}`);
-  const alphaBetaThetaData = {
-    labels,
-    alpha: sessions.map(s => s.alpha || 0),
-    beta: sessions.map(s => s.beta || 0),
-    theta: sessions.map(s => s.theta || 0),
-    smr: sessions.map(s => s.smr || 0)
-  };
+
 
   const brainWaveDistributionData = {
     alpha: lastSession?.alpha || 0,
@@ -110,6 +104,8 @@ function MyMetricsPage() {
     theta: lastSession?.theta || 0,
     smr: lastSession?.smr || 0,
   };
+
+  
 
   return (
     <div className="metrics">
@@ -173,7 +169,7 @@ function MyMetricsPage() {
       </div>
 
 
-      {alphaBetaThetaData && (
+      {(
         <div className="metrics__chart-section">
           <div className="metrics__chart-header">
             <h3>Мозговая активность</h3>
@@ -181,8 +177,8 @@ function MyMetricsPage() {
               Alpha (расслабление) · Beta (активность) · Theta (дремота) · SMR (фокус)
             </p>
           </div>
-          <AlphaBetaThetaChart data={alphaBetaThetaData} />
-        </div>
+          <AlphaBetaThetaChart sessions={sessions} />
+            </div>
       )}
 
       {brainWaveDistributionData && (

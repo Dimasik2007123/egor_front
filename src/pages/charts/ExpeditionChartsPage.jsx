@@ -75,21 +75,9 @@ function ExpeditionChartsPage() {
   const lastSession = sessions[sessions.length - 1];
 
   const labels = sessions.map(s => `${s.date} ${s.timeOfDay}`);
-  
   const chartDataMap = {
-    alphaBetaTheta: {
-      labels,
-      alpha: sessions.map(s => s.alpha || 0),
-      beta: sessions.map(s => s.beta || 0),
-      theta: sessions.map(s => s.theta || 0),
-      smr: sessions.map(s => s.smr || 0)
-    },
-    brainWaveDistribution: {
-      alpha: lastSession?.alpha || 0,
-      beta: lastSession?.beta || 0,
-      theta: lastSession?.theta || 0,
-      smr: lastSession?.smr || 0,
-    },
+    alphaBetaTheta: { sessions },
+    brainWaveDistribution: { sessions },
     fatigueModules: { sessions },
     emotional: { sessions },
     productivity: { sessions },
@@ -101,7 +89,6 @@ function ExpeditionChartsPage() {
   };
 
   const ActiveChartComponent = chartTypes.find(c => c.key === activeChart)?.component;
-
   return (
     <div className="charts">
       <button

@@ -1,17 +1,17 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 
-const AlphaBetaThetaChart = ({ data }) => {
-    if (!data || !data.labels || !data.alpha || !data.beta || !data.theta) {
-        return <div>Нет данных для отображения</div>;
+const AlphaBetaThetaChart = ({ sessions }) => {
+    if (!sessions || sessions.length === 0) {
+        return <div className="text-center text-gray-500 py-8">Нет данных для отображения мозговой активности</div>;
     }
 
     const chartData = {
-        labels: data.labels,
+        labels: sessions.map(s => `${s.date} (${s.timeOfDay})`),
         datasets: [
             {
                 label: 'Alpha (расслабление)',
-                data: data.alpha,
+                data: sessions.map(s => (s.alpha ?? 0) * 100),
                 borderColor: 'rgb(34, 197, 94)',
                 backgroundColor: 'rgba(34, 197, 94, 0.1)',
                 borderWidth: 2,
@@ -25,7 +25,7 @@ const AlphaBetaThetaChart = ({ data }) => {
             },
             {
                 label: 'Beta (активность)',
-                data: data.beta,
+                data: sessions.map(s => (s.beta ?? 0) * 100),
                 borderColor: 'rgb(59, 130, 246)',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 borderWidth: 2,
@@ -39,7 +39,7 @@ const AlphaBetaThetaChart = ({ data }) => {
             },
             {
                 label: 'Theta (дремота)',
-                data: data.theta,
+                data: sessions.map(s => (s.theta ?? 0) * 100),
                 borderColor: 'rgb(249, 115, 22)',
                 backgroundColor: 'rgba(249, 115, 22, 0.1)',
                 borderWidth: 2,
@@ -53,7 +53,7 @@ const AlphaBetaThetaChart = ({ data }) => {
             },
             {
                 label: 'SMR (фокус)',
-                data: data.smr,
+                data: sessions.map(s => (s.smr ?? 0) * 100),
                 borderColor: 'rgb(168, 85, 247)',
                 backgroundColor: 'rgba(168, 85, 247, 0.1)',
                 borderWidth: 2,
@@ -80,13 +80,6 @@ const AlphaBetaThetaChart = ({ data }) => {
             tooltip: {
                 mode: 'index',
                 intersect: false,
-                backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                titleColor: 'white',
-                bodyColor: '#e2e8f0',
-                borderColor: '#334155',
-                borderWidth: 1,
-                cornerRadius: 6,
-                displayColors: true,
                 callbacks: {
                     label: function(context) {
                         return `${context.dataset.label}: ${context.raw.toFixed(2)}`;
@@ -101,7 +94,7 @@ const AlphaBetaThetaChart = ({ data }) => {
                 ticks: { color: '#475569' }
             },
             x: {
-                title: { display: true, text: 'Время', color: '#475569' },
+                title: { display: true, text: 'Дата и время сессии', color: '#475569' },
                 grid: { display: false },
                 ticks: { color: '#475569' }
             }
