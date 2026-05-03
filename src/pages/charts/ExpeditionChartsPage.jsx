@@ -50,7 +50,6 @@ function ExpeditionChartsPage() {
       loadData();
     }
   }, [id, indNum]);
-
   const chartTypes = [
     { key: "alphaBetaTheta", label: "Мозговая активность", component: AlphaBetaThetaChart },
     { key: "brainWaveDistribution", label: "Распределение волн", component: BrainWaveDistributionChart },

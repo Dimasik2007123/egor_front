@@ -116,12 +116,7 @@ function ParticipantMetricsPage() {
     smr: sessions.map(s => s.smr || 0)
   };
 
-  const brainWaveDistributionData = {
-    alpha: lastSession?.alpha || 0,
-    beta: lastSession?.beta || 0,
-    theta: lastSession?.theta || 0,
-    smr: lastSession?.smr || 0,
-  };
+
 
 
 
@@ -205,7 +200,7 @@ function ParticipantMetricsPage() {
             Текущее соотношение Alpha, Beta, Theta и SMR (последний замер)
           </p>
         </div>
-        <BrainWaveDistributionChart data={brainWaveDistributionData} />
+        <BrainWaveDistributionChart sessions={sessions} />
       </div>
 
       <div className="metrics__chart-section">

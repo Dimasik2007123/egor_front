@@ -97,14 +97,6 @@ function MyMetricsPage() {
   
   const labels = sessions.map(s => `${s.date} ${s.timeOfDay}`);
 
-
-  const brainWaveDistributionData = {
-    alpha: lastSession?.alpha || 0,
-    beta: lastSession?.beta || 0,
-    theta: lastSession?.theta || 0,
-    smr: lastSession?.smr || 0,
-  };
-
   
 
   return (
@@ -181,7 +173,7 @@ function MyMetricsPage() {
             </div>
       )}
 
-      {brainWaveDistributionData && (
+      {(
         <div className="metrics__chart-section">
           <div className="metrics__chart-header">
             <h3>Распределение мозговых волн</h3>
@@ -189,7 +181,7 @@ function MyMetricsPage() {
               Текущее соотношение Alpha, Beta, Theta и SMR (последний замер)
             </p>
           </div>
-          <BrainWaveDistributionChart data={brainWaveDistributionData} />
+          <BrainWaveDistributionChart sessions={sessions} />
         </div>
       )}
 
